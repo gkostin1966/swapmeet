@@ -9,7 +9,7 @@ RSpec.describe CategoriesPolicy, type: :policy do
   let(:category) { double('category') }
 
   context 'Entity' do
-    subject { described_class.new(entity_agent, category_agent) }
+    subject { described_class.new([entity_agent, category_agent]) }
 
     let(:entity_agent) { SubjectPolicyAgent.new(:Entity, entity) }
     let(:entity) { double('entity') }
@@ -24,7 +24,7 @@ RSpec.describe CategoriesPolicy, type: :policy do
   end
 
   context 'User' do
-    subject { described_class.new(user_agent, category_agent) }
+    subject { described_class.new([user_agent, category_agent]) }
 
     let(:user_agent) { SubjectPolicyAgent.new(:User, user) }
     let(:user) { double('user') }

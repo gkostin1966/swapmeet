@@ -7,7 +7,7 @@ RSpec.describe DomainsPresenter do
 
   let(:presenter) { described_class.new(user, policy, models) }
   let(:user) { build(:user) }
-  let(:policy) { DomainsPolicy.new(SubjectPolicyAgent.new(:User, user), nil) }
+  let(:policy) { DomainsPolicy.new([SubjectPolicyAgent.new(:User, user), nil]) }
   let(:models) { domains }
   let(:domains) do
     [
@@ -28,10 +28,10 @@ RSpec.describe DomainsPresenter do
         expect(model_presenter).to be_a(DomainPresenter)
         expect(model_presenter.user).to be user
         expect(model_presenter.policy).to be_a(DomainsPolicy)
-        expect(model_presenter.policy.subject).to be policy.subject
-        expect(model_presenter.policy.object).to be_a(DomainPolicyAgent)
-        expect(model_presenter.policy.object.client_type).to eq :Domain.to_s
-        expect(model_presenter.policy.object.client).to be domains[index]
+        expect(model_presenter.policy.subject_agent).to be policy.subject_agent
+        expect(model_presenter.policy.object_agent).to be_a(DomainPolicyAgent)
+        expect(model_presenter.policy.object_agent.client_type).to eq :Domain.to_s
+        expect(model_presenter.policy.object_agent.client).to be domains[index]
         expect(model_presenter.model).to be domains[index]
       end
     end

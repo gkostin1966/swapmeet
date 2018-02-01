@@ -22,7 +22,7 @@ RSpec.describe UsersController, type: :controller do
     end
 
     context 'unauthorized' do
-      let(:policy) { ControllersHelper::UnauthorizePolicy.new(SubjectPolicyAgent.new(:User, current_user), UserPolicyAgent.new(user)) }
+      let(:policy) { ControllersHelper::UnauthorizePolicy.new([SubjectPolicyAgent.new(:User, current_user), UserPolicyAgent.new(user)]) }
 
       it '#index' do
         get :index
@@ -121,7 +121,7 @@ RSpec.describe UsersController, type: :controller do
     end
 
     context 'authorized' do
-      let(:policy) { ControllersHelper::AuthorizePolicy.new(SubjectPolicyAgent.new(:User, current_user), UserPolicyAgent.new(user)) }
+      let(:policy) { ControllersHelper::AuthorizePolicy.new([SubjectPolicyAgent.new(:User, current_user), UserPolicyAgent.new(user)]) }
       it '#index' do
         get :index
         expect(response).to have_http_status(:ok)
@@ -214,7 +214,7 @@ RSpec.describe UsersController, type: :controller do
         #   it { expect(response).to have_http_status(:found) }
         # end
         context 'newspaper' do
-          let(:newspapers_policy) { ControllersHelper::AuthorizePolicy.new(SubjectPolicyAgent.new(:User, current_user), NewspaperPolicyAgent.new(newspaper)) }
+          let(:newspapers_policy) { ControllersHelper::AuthorizePolicy.new([SubjectPolicyAgent.new(:User, current_user), NewspaperPolicyAgent.new(newspaper)]) }
           before do
             allow(NewspapersPolicy).to receive(:new).and_return(newspapers_policy)
             patch :add, params: { newspaper_id: newspaper.id, id: user.id }
@@ -222,7 +222,7 @@ RSpec.describe UsersController, type: :controller do
           it { expect(response).to have_http_status(:found) }
         end
         context 'publisher' do
-          let(:publishers_policy) { ControllersHelper::AuthorizePolicy.new(SubjectPolicyAgent.new(:User, current_user), PublisherPolicyAgent.new(publisher)) }
+          let(:publishers_policy) { ControllersHelper::AuthorizePolicy.new([SubjectPolicyAgent.new(:User, current_user), PublisherPolicyAgent.new(publisher)]) }
           before do
             allow(PublishersPolicy).to receive(:new).and_return(publishers_policy)
             patch :add, params: { publisher_id: publisher.id, id: user.id  }
@@ -238,7 +238,7 @@ RSpec.describe UsersController, type: :controller do
         #   it { expect(response).to have_http_status(:found) }
         # end
         context 'newspaper' do
-          let(:newspapers_policy) { ControllersHelper::AuthorizePolicy.new(SubjectPolicyAgent.new(:User, current_user), NewspaperPolicyAgent.new(newspaper)) }
+          let(:newspapers_policy) { ControllersHelper::AuthorizePolicy.new([SubjectPolicyAgent.new(:User, current_user), NewspaperPolicyAgent.new(newspaper)]) }
           before do
             allow(NewspapersPolicy).to receive(:new).and_return(newspapers_policy)
             delete :remove, params: { newspaper_id: newspaper.id, id: user.id }
@@ -246,7 +246,7 @@ RSpec.describe UsersController, type: :controller do
           it { expect(response).to have_http_status(:found) }
         end
         context 'publisher' do
-          let(:publishers_policy) { ControllersHelper::AuthorizePolicy.new(SubjectPolicyAgent.new(:User, current_user), PublisherPolicyAgent.new(publisher)) }
+          let(:publishers_policy) { ControllersHelper::AuthorizePolicy.new([SubjectPolicyAgent.new(:User, current_user), PublisherPolicyAgent.new(publisher)]) }
           before do
             allow(PublishersPolicy).to receive(:new).and_return(publishers_policy)
             delete :remove, params: { publisher_id: publisher.id, id: user.id }

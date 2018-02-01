@@ -59,7 +59,7 @@ class GatekeepersController < ApplicationController
     # Authorization Policy
     def new_policy
       @gatekeeper = Gatekeeper.find(params[:id]) if params[:id].present?
-      GatekeepersPolicy.new(SubjectPolicyAgent.new(:User, current_user), ObjectPolicyAgent.new(:Gatekeeper, @gatekeeper))
+      GatekeepersPolicy.new([SubjectPolicyAgent.new(:User, current_user), ObjectPolicyAgent.new(:Gatekeeper, @gatekeeper)])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

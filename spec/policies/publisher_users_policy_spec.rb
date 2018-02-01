@@ -9,7 +9,7 @@ RSpec.describe PublisherUsersPolicy, type: :policy do
   let(:user) { double('user') }
 
   context 'Entity' do
-    subject { described_class.new(entity_agent, user_agent) }
+    subject { described_class.new([entity_agent, user_agent]) }
 
     let(:entity_agent) { SubjectPolicyAgent.new(:Entity, entity) }
     let(:entity) { double('entity') }
@@ -28,7 +28,7 @@ RSpec.describe PublisherUsersPolicy, type: :policy do
   end
 
   context 'User' do
-    subject { described_class.new(current_user_agent, user_agent) }
+    subject { described_class.new([current_user_agent, user_agent]) }
 
     let(:current_user_agent) { SubjectPolicyAgent.new(:User, current_user) }
     let(:current_user) { double('current user') }
@@ -76,7 +76,7 @@ RSpec.describe PublisherUsersPolicy, type: :policy do
       end
 
       context 'Publisher Agent' do
-        subject { described_class.new(current_user_agent, publisher_agent) }
+        subject { described_class.new([current_user_agent, publisher_agent]) }
         let(:publisher_agent) { PublisherPolicyAgent.new(publisher_object) }
         let(:publisher_object) { nil }
         it { expect(subject.index?).to be false }

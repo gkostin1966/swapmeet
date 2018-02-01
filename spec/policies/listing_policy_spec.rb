@@ -9,7 +9,7 @@ RSpec.describe ListingPolicy, type: :policy do
   let(:listing) { double('listing') }
 
   context 'Entity' do
-    subject { described_class.new(entity_agent, listing_agent) }
+    subject { described_class.new([entity_agent, listing_agent]) }
 
     let(:entity_agent) { SubjectPolicyAgent.new(:Entity, entity) }
     let(:entity) { double('entity') }
@@ -37,7 +37,7 @@ RSpec.describe ListingPolicy, type: :policy do
   end
 
   context 'User' do
-    subject { described_class.new(user_agent, listing_agent) }
+    subject { described_class.new([user_agent, listing_agent]) }
 
     let(:user_agent) { SubjectPolicyAgent.new(:User, user) }
     let(:user) { double('user') }

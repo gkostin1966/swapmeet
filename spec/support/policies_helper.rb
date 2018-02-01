@@ -5,7 +5,7 @@ module PoliciesHelper
 end
 
 RSpec.shared_examples 'an application policy' do
-  subject { described_class.new(subject_agent, object_agent) }
+  subject { described_class.new([subject_agent, object_agent]) }
 
   let(:subject_agent) { double('subject agent') }
   let(:object_agent) { double('object agent') }

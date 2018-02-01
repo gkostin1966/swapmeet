@@ -7,7 +7,7 @@ RSpec.describe ListingPresenter do
 
   let(:presenter) { described_class.new(user, policy, model) }
   let(:user) { build(:user) }
-  let(:policy) { ListingPolicy.new(SubjectPolicyAgent.new(:User, user), ListingPolicyAgent.new(model)) }
+  let(:policy) { ListingPolicy.new([SubjectPolicyAgent.new(:User, user), ListingPolicyAgent.new(model)]) }
   let(:model) { build(:listing, title: title, owner: owner, category: category, newspaper: newspaper) }
   let(:title) { nil }
   let(:owner) { nil }
@@ -74,10 +74,10 @@ RSpec.describe ListingPresenter do
       is_expected.to be_a(CategoryPresenter)
       expect(subject.user).to be user
       expect(subject.policy).to be_a(CategoriesPolicy)
-      expect(subject.policy.subject).to be policy.subject
-      expect(subject.policy.object).to be_a(CategoryPolicyAgent)
-      expect(subject.policy.object.client_type).to eq :Category.to_s
-      expect(subject.policy.object.client).to be model.category
+      expect(subject.policy.subject_agent).to be policy.subject_agent
+      expect(subject.policy.object_agent).to be_a(CategoryPolicyAgent)
+      expect(subject.policy.object_agent.client_type).to eq :Category.to_s
+      expect(subject.policy.object_agent.client).to be model.category
       expect(subject.model).to be category
     end
   end
@@ -121,10 +121,10 @@ RSpec.describe ListingPresenter do
       is_expected.to be_a(NewspaperPresenter)
       expect(subject.user).to be user
       expect(subject.policy).to be_a(NewspapersPolicy)
-      expect(subject.policy.subject).to be policy.subject
-      expect(subject.policy.object).to be_a(NewspaperPolicyAgent)
-      expect(subject.policy.object.client_type).to eq :Newspaper.to_s
-      expect(subject.policy.object.client).to be model.newspaper
+      expect(subject.policy.subject_agent).to be policy.subject_agent
+      expect(subject.policy.object_agent).to be_a(NewspaperPolicyAgent)
+      expect(subject.policy.object_agent.client_type).to eq :Newspaper.to_s
+      expect(subject.policy.object_agent.client).to be model.newspaper
       expect(subject.model).to be model.newspaper
     end
   end
@@ -168,10 +168,10 @@ RSpec.describe ListingPresenter do
       is_expected.to be_a(UserPresenter)
       expect(subject.user).to be user
       expect(subject.policy).to be_a(UsersPolicy)
-      expect(subject.policy.subject).to be policy.subject
-      expect(subject.policy.object).to be_a(UserPolicyAgent)
-      expect(subject.policy.object.client_type).to eq :User.to_s
-      expect(subject.policy.object.client).to be model.owner
+      expect(subject.policy.subject_agent).to be policy.subject_agent
+      expect(subject.policy.object_agent).to be_a(UserPolicyAgent)
+      expect(subject.policy.object_agent.client_type).to eq :User.to_s
+      expect(subject.policy.object_agent.client).to be model.owner
       expect(subject.model).to be model.owner
     end
   end

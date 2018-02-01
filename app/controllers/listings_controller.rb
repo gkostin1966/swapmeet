@@ -8,7 +8,7 @@ class ListingsController < ApplicationController
 
     if params[:category_id].present?
       @category = Category.find(params[:category_id])
-      @category = CategoryPresenter.new(current_user, CategoriesPolicy.new(@policy.subject, CategoryPolicyAgent.new(@category)), @category)
+      @category = CategoryPresenter.new(current_user, CategoriesPolicy.new([@policy.subject_agent, CategoryPolicyAgent.new(@category)]), @category)
       @listings = Listing.where("category_id = ?", params[:category_id])
       @listings = ListingsPresenter.new(current_user, @policy, @listings)
       render "categories/listings"
@@ -107,7 +107,7 @@ class ListingsController < ApplicationController
     # Authorization Policy
     def new_policy
       @listing = Listing.find(params[:id]) if params[:id].present?
-      ListingPolicy.new(SubjectPolicyAgent.new(:User, current_user), ListingPolicyAgent.new(@listing))
+      ListingPolicy.new([SubjectPolicyAgent.new(:User, current_user), ListingPolicyAgent.new(@listing)])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

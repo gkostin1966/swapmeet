@@ -10,7 +10,7 @@ RSpec.describe ApplicationPolicy, type: :policy do
   describe 'application policy' do
     subject { application_policy }
 
-    let(:application_policy) { described_class.new(subject_agent, object_agent) }
+    let(:application_policy) { described_class.new([subject_agent, object_agent]) }
     let(:subject_agent) { SubjectPolicyAgent.new(:Subject, subject_client) }
     let(:subject_client) { double('subject client') }
     let(:object_agent) { ObjectPolicyAgent.new(:Object, object_client) }
@@ -37,28 +37,28 @@ RSpec.describe ApplicationPolicy, type: :policy do
       end
     end
 
-    describe '#administrator?' do
-      subject { application_policy.administrator? }
-      it { is_expected.to be false }
-      context 'administrator' do
-        before do
-          before { PolicyMaker.permit!(subject_agent, PolicyMaker::ROLE_ADMINISTRATOR, object_agent) }
-          it { is_expected.to be true }
-        end
-      end
-    end
+    # describe '#administrator?' do
+    #   subject { application_policy.administrator? }
+    #   it { is_expected.to be false }
+    #   context 'administrator' do
+    #     before do
+    #       before { PolicyMaker.permit!(subject_agent, PolicyMaker::ROLE_ADMINISTRATOR, object_agent) }
+    #       it { is_expected.to be true }
+    #     end
+    #   end
+    # end
 
-    describe '#administrator_agent?' do
-      subject { application_policy.administrator_agent?(agent) }
-      let(:agent) { NounPolicyAgent.new(:Agent, agent_client) }
-      let(:agent_client) { double('agent client') }
-      it { is_expected.to be false }
-      context 'administrator' do
-        before do
-          before { PolicyMaker.permit!(agent, PolicyMaker::ROLE_ADMINISTRATOR, object_agent) }
-          it { is_expected.to be true }
-        end
-      end
-    end
+    # describe '#administrator_agent?' do
+    #   subject { application_policy.administrator_agent?(agent) }
+    #   let(:agent) { NounPolicyAgent.new(:Agent, agent_client) }
+    #   let(:agent_client) { double('agent client') }
+    #   it { is_expected.to be false }
+    #   context 'administrator' do
+    #     before do
+    #       before { PolicyMaker.permit!(agent, PolicyMaker::ROLE_ADMINISTRATOR, object_agent) }
+    #       it { is_expected.to be true }
+    #     end
+    #   end
+    # end
   end
 end

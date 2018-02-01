@@ -44,12 +44,13 @@ class ApplicationController < ActionController::Base
     def set_policy
       @policy = new_policy
       if current_user.respond_to?(:email) && ['gkostin@umich.edu'].include?(current_user.email)
-        @policy = RootPolicy.new(@policy.subject, @policy.object)
+        @policy = RootPolicy.new([@policy.subject_agent, @policy.object_agent])
       end
+      @policy
     end
 
     # Authorization Policy
     def new_policy
-      ApplicationPolicy.new(SubjectPolicyAgent.new(:User, current_user), nil)
+      ApplicationPolicy.new([SubjectPolicyAgent.new(:User, current_user), nil])
     end
 end

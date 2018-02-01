@@ -7,7 +7,7 @@ RSpec.describe PublishersPresenter do
 
   let(:presenter) { described_class.new(user, policy, models) }
   let(:user) { build(:user) }
-  let(:policy) { PublishersPolicy.new(SubjectPolicyAgent.new(:User, user), nil) }
+  let(:policy) { PublishersPolicy.new([SubjectPolicyAgent.new(:User, user), nil]) }
   let(:models) { publishers }
   let(:publishers) do
     [
@@ -28,10 +28,10 @@ RSpec.describe PublishersPresenter do
         expect(model_presenter).to be_a(PublisherPresenter)
         expect(model_presenter.user).to be user
         expect(model_presenter.policy).to be_a(PublishersPolicy)
-        expect(model_presenter.policy.subject).to be policy.subject
-        expect(model_presenter.policy.object).to be_a(PublisherPolicyAgent)
-        expect(model_presenter.policy.object.client_type).to eq :Publisher.to_s
-        expect(model_presenter.policy.object.client).to be publishers[index]
+        expect(model_presenter.policy.subject_agent).to be policy.subject_agent
+        expect(model_presenter.policy.object_agent).to be_a(PublisherPolicyAgent)
+        expect(model_presenter.policy.object_agent.client_type).to eq :Publisher.to_s
+        expect(model_presenter.policy.object_agent.client).to be publishers[index]
         expect(model_presenter.model).to be publishers[index]
       end
     end

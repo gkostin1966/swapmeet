@@ -6,11 +6,11 @@ class NewspaperPresenter < ApplicationPresenter
   # delegate :add?, :remove?, to: :policy
 
   # def permit?(user)
-  #   policy.revoke?(user.policy.object)
+  #   policy.revoke?(user.policy.object_agent)
   # end
   #
   # def revoke?(user)
-  #   policy.revoke?(user.policy.object)
+  #   policy.revoke?(user.policy.object_agent)
   # end
 
   delegate :name, :display_name, to: :model
@@ -21,15 +21,15 @@ class NewspaperPresenter < ApplicationPresenter
   end
 
   def newspaper?(object)
-    object.model.newspapers.exists?(policy.object.client.id)
+    object.model.newspapers.exists?(policy.object_agent.client.id)
   end
 
   def add?(object)
-    object.policy.add?(policy.object)
+    object.policy.add?(policy.object_agent)
   end
 
   def remove?(object)
-    object.policy.remove?(policy.object)
+    object.policy.remove?(policy.object_agent)
   end
 
   def publisher?
@@ -37,7 +37,7 @@ class NewspaperPresenter < ApplicationPresenter
   end
 
   def publisher
-    PublisherPresenter.new(user, PublishersPolicy.new(policy.subject, PublisherPolicyAgent.new(model.publisher)), model.publisher)
+    PublisherPresenter.new(user, PublishersPolicy.new([policy.subject_agent, PublisherPolicyAgent.new(model.publisher)]), model.publisher)
   end
 
   def publishers
@@ -49,7 +49,7 @@ class NewspaperPresenter < ApplicationPresenter
   end
 
   def listings
-    ListingsPresenter.new(user, ListingPolicy.new(policy.subject, policy.object), model.listings)
+    ListingsPresenter.new(user, ListingPolicy.new([policy.subject_agent, policy.object_agent]), model.listings)
   end
 
   def groups?
@@ -57,18 +57,18 @@ class NewspaperPresenter < ApplicationPresenter
   end
 
   def groups
-    GroupsPresenter.new(user, GroupsPolicy.new(policy.subject, policy.object), model.groups)
+    GroupsPresenter.new(user, GroupsPolicy.new([policy.subject_agent, policy.object_agent]), model.groups)
   end
 
   def user?(usr = nil)
     # return true if administrator?(usr) if usr.present?
     return model.users.exists?(usr.model.id) if usr.present?
-    # return true if PolicyResolver.new(policy.subject, PolicyMaker::ROLE_ADMINISTRATOR, PublisherPolicyAgent.new(model.publisher))
+    # return true if PolicyResolver.new(policy.subject_agent, PolicyMaker::ROLE_ADMINISTRATOR, PublisherPolicyAgent.new(model.publisher))
     model.users.exists?(user.id)
   end
 
   # def usr(usr = nil)
-  #   UserPresenter.new(user, UsersPolicy.new(policy.subject, policy.object), usr)
+  #   UserPresenter.new(user, UsersPolicy.new(policy.subject_agent, policy.object_agent), usr)
   # end
 
   def users?
@@ -76,6 +76,6 @@ class NewspaperPresenter < ApplicationPresenter
   end
 
   def users
-    UsersPresenter.new(user, UsersPolicy.new(policy.subject, policy.object), model.users)
+    UsersPresenter.new(user, UsersPolicy.new([policy.subject_agent, policy.object_agent]), model.users)
   end
 end

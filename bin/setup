@@ -22,7 +22,7 @@ chdir APP_ROOT do
   # system('bin/yarn')
 
   puts "\n== Copying sample files =="
-  ['administrators', 'cable', 'database', 'secrets'].each do |f|
+  ['cable', 'database', 'secrets'].each do |f|
     yml_name = "config/#{f}.yml"
     cp "#{yml_name}.sample", yml_name unless File.exist?(yml_name)
   end

@@ -9,7 +9,7 @@ RSpec.describe PrivilegesPolicy, type: :policy do
   let(:priviliege) { double('priviliege') }
 
   context 'Entity' do
-    subject { described_class.new(entity_agent, priviliege_agent) }
+    subject { described_class.new([entity_agent, priviliege_agent]) }
 
     let(:entity_agent) { SubjectPolicyAgent.new(:Entity, entity) }
     let(:entity) { double('entity') }
@@ -28,7 +28,7 @@ RSpec.describe PrivilegesPolicy, type: :policy do
   end
 
   context 'User' do
-    subject { described_class.new(user_agent, priviliege_agent) }
+    subject { described_class.new([user_agent, priviliege_agent]) }
 
     let(:user_agent) { SubjectPolicyAgent.new(:User, user) }
     let(:user) { double('user') }

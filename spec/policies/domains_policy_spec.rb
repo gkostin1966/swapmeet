@@ -9,7 +9,7 @@ RSpec.describe DomainsPolicy, type: :policy do
   let(:domain) { double('domain') }
 
   context 'Entity' do
-    subject { described_class.new(entity_agent, domain_agent) }
+    subject { described_class.new([entity_agent, domain_agent]) }
 
     let(:entity_agent) { SubjectPolicyAgent.new(:Entity, entity) }
     let(:entity) { double('entity') }
@@ -24,7 +24,7 @@ RSpec.describe DomainsPolicy, type: :policy do
   end
 
   context 'User' do
-    subject { described_class.new(user_agent, domain_agent) }
+    subject { described_class.new([user_agent, domain_agent]) }
 
     let(:user_agent) { SubjectPolicyAgent.new(:User, user) }
     let(:user) { double('user') }

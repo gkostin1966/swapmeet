@@ -9,7 +9,7 @@ RSpec.describe PublisherNewspapersPolicy, type: :policy do
   let(:newspaper) { double('newspaper') }
 
   context 'Entity' do
-    subject { described_class.new(entity_agent, newspaper_agent) }
+    subject { described_class.new([entity_agent, newspaper_agent]) }
 
     let(:entity_agent) { SubjectPolicyAgent.new(:Entity, entity) }
     let(:entity) { double('entity') }
@@ -29,7 +29,7 @@ RSpec.describe PublisherNewspapersPolicy, type: :policy do
   end
 
   context 'User' do
-    subject { described_class.new(user_agent, newspaper_agent) }
+    subject { described_class.new([user_agent, newspaper_agent]) }
 
     let(:user_agent) { SubjectPolicyAgent.new(:User, user) }
     let(:user) { double('user') }
@@ -103,7 +103,7 @@ RSpec.describe PublisherNewspapersPolicy, type: :policy do
       end
 
       context 'Publisher Agent' do
-        subject { described_class.new(user_agent, publisher_agent) }
+        subject { described_class.new([user_agent, publisher_agent]) }
         let(:publisher_agent) { PublisherPolicyAgent.new(publisher_object) }
         let(:publisher_object) { nil }
         it { expect(subject.index?).to be false }

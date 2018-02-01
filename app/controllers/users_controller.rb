@@ -6,13 +6,13 @@ class UsersController < ApplicationController
 
     if params[:publisher_id].present?
       @publisher = Publisher.find(params[:publisher_id])
-      @publisher = PublisherPresenter.new(current_user, PublishersPolicy.new(@policy.subject, PublisherPolicyAgent.new(@publisher)), @publisher)
+      @publisher = PublisherPresenter.new(current_user, PublishersPolicy.new([@policy.subject_agent, PublisherPolicyAgent.new(@publisher)]), @publisher)
       @users = User.order(email: :asc)
       @users = UsersPresenter.new(current_user, @policy, @users)
       render "publishers/users"
     elsif params[:newspaper_id].present?
       @newspaper = Newspaper.find(params[:newspaper_id])
-      @newspaper = NewspaperPresenter.new(current_user, NewspapersPolicy.new(@policy.subject, NewspaperPolicyAgent.new(@newspaper)), @newspaper)
+      @newspaper = NewspaperPresenter.new(current_user, NewspapersPolicy.new([@policy.subject_agent, NewspaperPolicyAgent.new(@newspaper)]), @newspaper)
       @users = User.order(email: :asc)
       @users = UsersPresenter.new(current_user, @policy, @users)
       render "newspapers/users"
@@ -85,7 +85,7 @@ class UsersController < ApplicationController
     @policy.authorize! :add?
     if params[:publisher_id].present?
       publisher = Publisher.find(params[:publisher_id])
-      publisher_policy = PublishersPolicy.new(SubjectPolicyAgent.new(:User, current_user), PublisherPolicyAgent.new(publisher))
+      publisher_policy = PublishersPolicy.new([SubjectPolicyAgent.new(:User, current_user), PublisherPolicyAgent.new(publisher)])
       publisher_policy.authorize! :add?
       publisher.users << @user
       respond_to do |format|
@@ -94,7 +94,7 @@ class UsersController < ApplicationController
       end
     elsif params[:newspaper_id].present?
       newspaper = Newspaper.find(params[:newspaper_id])
-      newspaper_policy = NewspapersPolicy.new(SubjectPolicyAgent.new(:User, current_user), NewspaperPolicyAgent.new(newspaper))
+      newspaper_policy = NewspapersPolicy.new([SubjectPolicyAgent.new(:User, current_user), NewspaperPolicyAgent.new(newspaper)])
       newspaper_policy.authorize! :add?
       newspaper.users << @user
       respond_to do |format|
@@ -108,7 +108,7 @@ class UsersController < ApplicationController
     @policy.authorize! :remove?
     if params[:publisher_id].present?
       publisher = Publisher.find(params[:publisher_id])
-      publisher_policy = PublishersPolicy.new(SubjectPolicyAgent.new(:User, current_user), PublisherPolicyAgent.new(publisher))
+      publisher_policy = PublishersPolicy.new([SubjectPolicyAgent.new(:User, current_user), PublisherPolicyAgent.new(publisher)])
       publisher_policy.authorize! :remove?, publisher
       publisher.users.delete(@user)
       respond_to do |format|
@@ -117,7 +117,7 @@ class UsersController < ApplicationController
       end
     elsif params[:newspaper_id].present?
       newspaper = Newspaper.find(params[:newspaper_id])
-      newspaper_policy = NewspapersPolicy.new(SubjectPolicyAgent.new(:User, current_user), NewspaperPolicyAgent.new(newspaper))
+      newspaper_policy = NewspapersPolicy.new([SubjectPolicyAgent.new(:User, current_user), NewspaperPolicyAgent.new(newspaper)])
       newspaper_policy.authorize! :remove?, newspaper
       newspaper.users.delete(@user)
       respond_to do |format|
@@ -164,7 +164,7 @@ class UsersController < ApplicationController
     # Authorization Policy
     def new_policy
       @user = User.find(params[:id]) if params[:id].present?
-      UsersPolicy.new(SubjectPolicyAgent.new(:User, current_user), UserPolicyAgent.new(@user))
+      UsersPolicy.new([SubjectPolicyAgent.new(:User, current_user), UserPolicyAgent.new(@user)])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

@@ -69,7 +69,7 @@ class DomainsController < ApplicationController
     # Authorization Policy
     def new_policy
       @domain = Domain.find(params[:id]) if params[:id].present?
-      DomainsPolicy.new(SubjectPolicyAgent.new(:User, current_user), DomainPolicyAgent.new(@domain))
+      DomainsPolicy.new([SubjectPolicyAgent.new(:User, current_user), DomainPolicyAgent.new(@domain)])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

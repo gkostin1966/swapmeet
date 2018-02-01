@@ -1,11 +1,18 @@
 # frozen_string_literal: true
 
 class ApplicationPolicy
-  attr_reader :subject, :object
+  attr_reader :agents
 
-  def initialize(subject, object)
-    @subject = subject
-    @object = object
+  def initialize(agents)
+    @agents = agents
+  end
+
+  def subject_agent
+    @agents.first
+  end
+
+  def object_agent
+    @agents.last
   end
 
   def new?
@@ -18,7 +25,7 @@ class ApplicationPolicy
 
   def authorize!(action, message = nil)
     return if send(action)
-    return if PolicyResolver.new(subject, ActionPolicyAgent.new(action.to_s.chop.to_sym), object).grant?
+    return if PolicyResolver.new(subject_agent, ActionPolicyAgent.new(action.to_s.chop.to_sym), object_agent).grant?
     raise NotAuthorizedError.new(message)
   end
 
@@ -29,6 +36,6 @@ class ApplicationPolicy
 
   def method_missing(method_name, *args, &block)
     return super if method_name[-1] != '?'
-    PolicyResolver.new(subject, ActionPolicyAgent.new(method_name.to_s.chop.to_sym), object).grant?
+    PolicyResolver.new(subject_agent, ActionPolicyAgent.new(method_name.to_s.chop.to_sym), object_agent).grant?
   end
 end

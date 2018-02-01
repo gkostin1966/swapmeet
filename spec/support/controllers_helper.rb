@@ -20,7 +20,7 @@ RSpec.shared_examples 'policy enforcer' do |model, klass, attrs = nil |
   describe "#{model} unautorized" do
     controller do
       def set_policy
-        @policy = ControllersHelper::UnauthorizePolicy.new(nil, nil)
+        @policy = ControllersHelper::UnauthorizePolicy.new([nil, nil])
       end
     end
 
@@ -70,7 +70,7 @@ RSpec.shared_examples 'policy enforcer' do |model, klass, attrs = nil |
 
     controller do
       def set_policy
-        @policy = ControllersHelper::AuthorizePolicy.new(nil, nil)
+        @policy = ControllersHelper::AuthorizePolicy.new([nil, nil])
       end
     end
 

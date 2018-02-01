@@ -6,11 +6,11 @@ class PublisherPresenter < ApplicationPresenter
   delegate :add?, :remove?, to: :policy
 
   # def permit?(user)
-  #   policy.permit_user?(user.policy.object)
+  #   policy.permit_user?(user.policy.object_agent)
   # end
   #
   # def revoke?(user)
-  #   policy.revoke_user?(user.policy.object)
+  #   policy.revoke_user?(user.policy.object_agent)
   # end
 
   delegate :name, :display_name, to: :model
@@ -25,7 +25,7 @@ class PublisherPresenter < ApplicationPresenter
   end
 
   def domain
-    DomainPresenter.new(user, DomainsPolicy.new(policy.subject, DomainPolicyAgent.new(model.domain)), model.domain)
+    DomainPresenter.new(user, DomainsPolicy.new([policy.subject_agent, DomainPolicyAgent.new(model.domain)]), model.domain)
   end
 
   def domains
@@ -42,7 +42,7 @@ class PublisherPresenter < ApplicationPresenter
   end
 
   def newspapers
-    NewspapersPresenter.new(user, NewspapersPolicy.new(policy.subject, policy.object), model.newspapers)
+    NewspapersPresenter.new(user, NewspapersPolicy.new([policy.subject_agent, policy.object_agent]), model.newspapers)
   end
 
   def group?(group)
@@ -55,7 +55,7 @@ class PublisherPresenter < ApplicationPresenter
   end
 
   def groups
-    GroupsPresenter.new(user, GroupsPolicy.new(policy.subject, policy.object), model.groups)
+    GroupsPresenter.new(user, GroupsPolicy.new([policy.subject_agent, policy.object_agent]), model.groups)
   end
 
   def user?(usr = nil)
@@ -68,6 +68,6 @@ class PublisherPresenter < ApplicationPresenter
   end
 
   def users
-    UsersPresenter.new(user, UsersPolicy.new(policy.subject, policy.object), model.users)
+    UsersPresenter.new(user, UsersPolicy.new([policy.subject_agent, policy.object_agent]), model.users)
   end
 end

@@ -6,7 +6,7 @@ class NewspapersController < ApplicationController
     if params[:publisher_id].present?
       @publisher = Publisher.find(params[:publisher_id])
       @publisher = PublisherPresenter.new(current_user,
-                                          PublishersPolicy.new(@policy.subject, PublisherPolicyAgent.new(@publisher)),
+                                          PublishersPolicy.new([@policy.subject_agent, PublisherPolicyAgent.new(@publisher)]),
                                           @publisher)
       @newspapers = Newspaper.all
       @newspapers = NewspapersPresenter.new(current_user, @policy, @newspapers)
@@ -101,7 +101,7 @@ class NewspapersController < ApplicationController
     # Authorization Policy
     def new_policy
       @newspaper = Newspaper.find(params[:id]) if params[:id].present?
-      NewspapersPolicy.new(SubjectPolicyAgent.new(:User, current_user), ObjectPolicyAgent.new(:Newspaper, @newspaper))
+      NewspapersPolicy.new([SubjectPolicyAgent.new(:User, current_user), ObjectPolicyAgent.new(:Newspaper, @newspaper)])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

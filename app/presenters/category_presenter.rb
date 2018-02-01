@@ -13,6 +13,6 @@ class CategoryPresenter < ApplicationPresenter
   end
 
   def listings
-    ListingsPresenter.new(user, ListingPolicy.new(policy.subject, policy.object), model.listings)
+    ListingsPresenter.new(user, ListingPolicy.new([policy.subject_agent, policy.object_agent]), model.listings)
   end
 end

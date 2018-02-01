@@ -17,7 +17,7 @@ class GroupPresenter < ApplicationPresenter
   end
 
   def parent
-    GroupPresenter.new(user, GroupsPolicy.new(policy.subject, GroupPolicyAgent.new(model.parent)), model.parent)
+    GroupPresenter.new(user, GroupsPolicy.new([policy.subject_agent, GroupPolicyAgent.new(model.parent)]), model.parent)
   end
 
   def groups
@@ -25,15 +25,15 @@ class GroupPresenter < ApplicationPresenter
   end
 
   def child?(object)
-    object.model.groups.exists?(policy.object.client.id)
+    object.model.groups.exists?(policy.object_agent.client.id)
   end
 
   def add?(object)
-    object.policy.add?(policy.object)
+    object.policy.add?(policy.object_agent)
   end
 
   def remove?(object)
-    object.policy.remove?(policy.object)
+    object.policy.remove?(policy.object_agent)
   end
 
   def children?
@@ -41,7 +41,7 @@ class GroupPresenter < ApplicationPresenter
   end
 
   def children
-    GroupsPresenter.new(user, GroupsPolicy.new(policy.subject, policy.object), model.children)
+    GroupsPresenter.new(user, GroupsPolicy.new([policy.subject_agent, policy.object_agent]), model.children)
   end
 
   def publishers?
@@ -49,7 +49,7 @@ class GroupPresenter < ApplicationPresenter
   end
 
   def publishers
-    PublishersPresenter.new(user, PublishersPolicy.new(policy.subject, policy.object), model.publishers)
+    PublishersPresenter.new(user, PublishersPolicy.new([policy.subject_agent, policy.object_agent]), model.publishers)
   end
 
   def newspapers?
@@ -57,7 +57,7 @@ class GroupPresenter < ApplicationPresenter
   end
 
   def newspapers
-    NewspapersPresenter.new(user, NewspapersPolicy.new(policy.subject, policy.object), model.newspapers)
+    NewspapersPresenter.new(user, NewspapersPolicy.new([policy.subject_agent, policy.object_agent]), model.newspapers)
   end
 
   def user?(usr = nil)
@@ -70,6 +70,6 @@ class GroupPresenter < ApplicationPresenter
   end
 
   def users
-    UsersPresenter.new(user, UsersPolicy.new(policy.subject, policy.object), model.users)
+    UsersPresenter.new(user, UsersPolicy.new([policy.subject_agent, policy.object_agent]), model.users)
   end
 end

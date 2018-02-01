@@ -15,7 +15,7 @@ class DomainPresenter < ApplicationPresenter
   end
 
   def parent
-    DomainPresenter.new(user, DomainsPolicy.new(policy.subject, DomainPolicyAgent.new(model.parent)), model.parent)
+    DomainPresenter.new(user, DomainsPolicy.new([policy.subject_agent, DomainPolicyAgent.new(model.parent)]), model.parent)
   end
 
   def domains
@@ -27,7 +27,7 @@ class DomainPresenter < ApplicationPresenter
   end
 
   def children
-    DomainsPresenter.new(user, DomainsPolicy.new(policy.subject, policy.object), model.children)
+    DomainsPresenter.new(user, DomainsPolicy.new([policy.subject_agent, policy.object_agent]), model.children)
   end
 
   def publishers?
@@ -35,6 +35,6 @@ class DomainPresenter < ApplicationPresenter
   end
 
   def publishers
-    PublishersPresenter.new(user, PublishersPolicy.new(policy.subject, policy.object), model.publishers)
+    PublishersPresenter.new(user, PublishersPolicy.new([policy.subject_agent, policy.object_agent]), model.publishers)
   end
 end

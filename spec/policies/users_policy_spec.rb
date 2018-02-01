@@ -9,7 +9,7 @@ RSpec.describe UsersPolicy, type: :policy do
   let(:user) { double('user') }
 
   context 'Entity' do
-    subject { described_class.new(entity_agent, user_agent) }
+    subject { described_class.new([entity_agent, user_agent]) }
 
     let(:entity_agent) { SubjectPolicyAgent.new(:Entity, entity) }
     let(:entity) { double('entity') }
@@ -35,7 +35,7 @@ RSpec.describe UsersPolicy, type: :policy do
       end
       context 'Publisher' do
         let(:client_type) { :Publisher.to_s }
-        before { allow(PublisherUsersPolicy).to receive(:new).with(entity_agent, user_agent).and_return(policy) }
+        before { allow(PublisherUsersPolicy).to receive(:new).with([entity_agent, user_agent]).and_return(policy) }
         it do
           expect(subject.index?).to be boolean
           expect(subject.show?).to be false
@@ -50,7 +50,7 @@ RSpec.describe UsersPolicy, type: :policy do
       end
       context 'Newspaper' do
         let(:client_type) { :Newspaper.to_s }
-        before { allow(NewspaperUsersPolicy).to receive(:new).with(entity_agent, user_agent).and_return(policy) }
+        before { allow(NewspaperUsersPolicy).to receive(:new).with([entity_agent, user_agent]).and_return(policy) }
         it do
           expect(subject.index?).to be boolean
           expect(subject.show?).to be false
@@ -82,7 +82,7 @@ RSpec.describe UsersPolicy, type: :policy do
 
 
   context 'User' do
-    subject { described_class.new(current_user_agent, user_agent) }
+    subject { described_class.new([current_user_agent, user_agent]) }
 
     let(:current_user_agent) { SubjectPolicyAgent.new(:User, current_user) }
     let(:current_user) { double('current user') }

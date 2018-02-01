@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe PublishersPolicy, type: :policy do
-  subject { described_class.new(entity_agent, publisher_agent) }
+  subject { described_class.new([entity_agent, publisher_agent]) }
 
   let(:entity_agent) { SubjectPolicyAgent.new(entity_type, entity) }
   let(:entity_type) { double('entity_type') }

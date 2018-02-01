@@ -7,7 +7,7 @@ RSpec.describe GroupsPresenter do
 
   let(:presenter) { described_class.new(user, policy, models) }
   let(:user) { build(:user) }
-  let(:policy) { GroupsPolicy.new(SubjectPolicyAgent.new(:User, user), nil) }
+  let(:policy) { GroupsPolicy.new([SubjectPolicyAgent.new(:User, user), nil]) }
   let(:models) { groups }
   let(:groups) do
     [
@@ -28,10 +28,10 @@ RSpec.describe GroupsPresenter do
         expect(model_presenter).to be_a(GroupPresenter)
         expect(model_presenter.user).to be user
         expect(model_presenter.policy).to be_a(GroupsPolicy)
-        expect(model_presenter.policy.subject).to be policy.subject
-        expect(model_presenter.policy.object).to be_a(GroupPolicyAgent)
-        expect(model_presenter.policy.object.client_type).to eq :Group.to_s
-        expect(model_presenter.policy.object.client).to be groups[index]
+        expect(model_presenter.policy.subject_agent).to be policy.subject_agent
+        expect(model_presenter.policy.object_agent).to be_a(GroupPolicyAgent)
+        expect(model_presenter.policy.object_agent.client_type).to eq :Group.to_s
+        expect(model_presenter.policy.object_agent.client).to be groups[index]
         expect(model_presenter.model).to be groups[index]
       end
     end
