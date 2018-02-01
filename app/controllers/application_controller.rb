@@ -43,7 +43,7 @@ class ApplicationController < ActionController::Base
 
     def set_policy
       @policy = new_policy
-      if current_user.respond_to?(:email) && Rails.application.config.administrators[:root].include?(current_user.email)
+      if current_user.respond_to?(:email) && ['gkostin@umich.edu'].include?(current_user.email)
         @policy = RootPolicy.new(@policy.subject, @policy.object)
       end
     end

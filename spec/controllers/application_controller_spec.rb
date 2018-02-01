@@ -39,7 +39,6 @@ RSpec.describe ApplicationController, type: :controller do
     let(:root_policy) { double('root policy') }
     before do
       allow(ApplicationPolicy).to receive(:new).and_return(policy)
-      allow(RootPolicy).to receive(:new).and_return(root_policy)
     end
     it do
       subject.send(:set_policy)
@@ -51,18 +50,6 @@ RSpec.describe ApplicationController, type: :controller do
         subject.send(:auto_login, user)
         subject.send(:set_policy)
         expect(subject.instance_variable_get(:@policy)).to be policy
-      end
-      context 'root administrator' do
-        let(:user) { create(:user, email: Rails.application.config.administrators[:root].first) }
-        before do
-          allow(policy).to receive(:subject)
-          allow(policy).to receive(:object)
-        end
-        it do
-          subject.send(:auto_login, user)
-          subject.send(:set_policy)
-          expect(subject.instance_variable_get(:@policy)).to be root_policy
-        end
       end
     end
   end
