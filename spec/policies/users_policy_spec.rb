@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe UsersPolicy, type: :policy do
   it_should_behave_like 'an application policy'
 
-  let(:user_agent) { UserPolicyAgent.new(user) }
+  let(:user_agent) { ObjectPolicyAgent.new(:User, user) }
   let(:user) { double('user') }
 
   context 'Entity' do

@@ -7,7 +7,7 @@ RSpec.describe PrivilegePresenter do
 
   let(:presenter) { described_class.new(user, policy, model) }
   let(:user) { build(:user) }
-  let(:policy) { PrivilegesPolicy.new([SubjectPolicyAgent.new(:User, user), PrivilegePolicyAgent.new(model)]) }
+  let(:policy) { PrivilegesPolicy.new([SubjectPolicyAgent.new(:User, user), ObjectPolicyAgent.new(:Privilege, model)]) }
   let(:model) { build(:privilege) }
 
   it { is_expected.to be_a(described_class) }

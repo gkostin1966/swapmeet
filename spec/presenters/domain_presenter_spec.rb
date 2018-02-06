@@ -7,7 +7,7 @@ RSpec.describe DomainPresenter do
 
   let(:presenter) { described_class.new(user, policy, model) }
   let(:user) { build(:user) }
-  let(:policy) { DomainsPolicy.new([SubjectPolicyAgent.new(:User, user), DomainPolicyAgent.new(model)]) }
+  let(:policy) { DomainsPolicy.new([SubjectPolicyAgent.new(:User, user), ObjectPolicyAgent.new(:Domain, model)]) }
   let(:model) { build(:domain, display_name: display_name, parent: parent, children: children, publishers: publishers) }
   let(:display_name) { nil }
   let(:parent) { nil }
@@ -75,7 +75,7 @@ RSpec.describe DomainPresenter do
       expect(subject.user).to be user
       expect(subject.policy).to be_a(DomainsPolicy)
       expect(subject.policy.subject_agent).to be policy.subject_agent
-      expect(subject.policy.object_agent).to be_a(DomainPolicyAgent)
+      expect(subject.policy.object_agent).to be_a(ObjectPolicyAgent)
       expect(subject.policy.object_agent.client_type).to eq :Domain.to_s
       expect(subject.policy.object_agent.client).to be model.parent
       expect(subject.model).to be model.parent
@@ -115,7 +115,7 @@ RSpec.describe DomainPresenter do
         expect(domain.user).to be user
         expect(domain.policy).to be_a(DomainsPolicy)
         expect(domain.policy.subject_agent).to be policy.subject_agent
-        expect(domain.policy.object_agent).to be_a(DomainPolicyAgent)
+        expect(domain.policy.object_agent).to be_a(ObjectPolicyAgent)
         expect(domain.policy.object_agent.client_type).to eq :Domain.to_s
         expect(domain.policy.object_agent.client).to be children[index]
         expect(domain.model).to be children[index]
@@ -156,7 +156,7 @@ RSpec.describe DomainPresenter do
         expect(publisher.user).to be user
         expect(publisher.policy).to be_a(PublishersPolicy)
         expect(publisher.policy.subject_agent).to be policy.subject_agent
-        expect(publisher.policy.object_agent).to be_a(PublisherPolicyAgent)
+        expect(publisher.policy.object_agent).to be_a(ObjectPolicyAgent)
         expect(publisher.policy.object_agent.client_type).to eq :Publisher.to_s
         expect(publisher.policy.object_agent.client).to be publishers[index]
         expect(publisher.model).to be publishers[index]

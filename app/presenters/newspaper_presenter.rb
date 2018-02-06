@@ -21,7 +21,7 @@ class NewspaperPresenter < ApplicationPresenter
   end
 
   def publisher
-    PublisherPresenter.new(user, PublishersPolicy.new([policy.subject_agent, PublisherPolicyAgent.new(model.publisher)]), model.publisher)
+    PublisherPresenter.new(user, PublishersPolicy.new([policy.subject_agent, ObjectPolicyAgent.new(:Publisher, model.publisher)]), model.publisher)
   end
 
   def publishers
@@ -53,6 +53,6 @@ class NewspaperPresenter < ApplicationPresenter
   end
 
   def users
-    @users_presenter ||= UsersPresenter.new(user, UsersPolicy.new(policy.agents.push(UserPolicyAgent.new(nil))), model.users)
+    @users_presenter ||= UsersPresenter.new(user, UsersPolicy.new(policy.agents.push(ObjectPolicyAgent.new(:User, nil))), model.users)
   end
 end

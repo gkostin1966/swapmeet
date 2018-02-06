@@ -69,7 +69,7 @@ class CategoriesController < ApplicationController
     # Authorization Policy
     def new_policy
       @category = Category.find(params[:id]) if params[:id].present?
-      CategoriesPolicy.new([SubjectPolicyAgent.new(:User, current_user), CategoryPolicyAgent.new(@category)])
+      CategoriesPolicy.new([SubjectPolicyAgent.new(:User, current_user), ObjectPolicyAgent.new(:Category, @category)])
     end
 
     # # Never trust parameters from the scary internet, only allow the white list through.

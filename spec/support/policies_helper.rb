@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-module PoliciesHelper
-  ENTITY_TYPES = %i[Category Domain Group Listing Newspaper Publisher User]
-end
-
 RSpec.shared_examples 'an application policy' do
   subject { described_class.new([subject_agent, object_agent]) }
 

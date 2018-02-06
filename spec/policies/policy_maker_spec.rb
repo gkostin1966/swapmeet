@@ -3,9 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe PolicyMaker do
-  let(:subject_agent) { SubjectPolicyAgent.new(:Subject, :subject) }
-  let(:verb_agent) { VerbPolicyAgent.new(:Verb, :verb) }
-  let(:object_agent) { ObjectPolicyAgent.new(:Object, :object) }
+  let(:subject_agent) { SubjectPolicyAgent.new(:Entity, :subject) }
+  let(:verb_agent) { VerbPolicyAgent.new(:Entity, :verb) }
+  let(:object_agent) { ObjectPolicyAgent.new(:Entity, :object) }
 
   context 'policy' do
     let(:policy_resolver) { PolicyResolver.new(subject_agent, verb_agent, object_agent) }
@@ -38,7 +38,7 @@ RSpec.describe PolicyMaker do
     end
 
     context 'specific and general policies' do
-      let(:object_agent_type) { ObjectPolicyAgent.new(:Object, nil) }
+      let(:object_agent_type) { ObjectPolicyAgent.new(:Entity, nil) }
       let(:object_agent_any) { ObjectPolicyAgent.new(nil, nil) }
 
       it do

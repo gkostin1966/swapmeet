@@ -17,8 +17,8 @@ module PolicyMaker
 
   # Object Agents
   OBJECT_ANY = ObjectPolicyAgent.new(nil, nil)
-  USER_ANY = UserPolicyAgent.new(nil)
-  LISTING_ANY = ListingPolicyAgent.new(nil)
+  USER_ANY = ObjectPolicyAgent.new(:User, nil)
+  LISTING_ANY = ObjectPolicyAgent.new(:Listing, nil)
 
   def self.exists?(subject, verb, object)
     gatekeepers = query(subject, verb, object)

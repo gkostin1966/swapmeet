@@ -15,7 +15,7 @@ class DomainPresenter < ApplicationPresenter
   end
 
   def parent
-    DomainPresenter.new(user, DomainsPolicy.new([policy.subject_agent, DomainPolicyAgent.new(model.parent)]), model.parent)
+    DomainPresenter.new(user, DomainsPolicy.new([policy.subject_agent, ObjectPolicyAgent.new(:Domain, model.parent)]), model.parent)
   end
 
   def domains

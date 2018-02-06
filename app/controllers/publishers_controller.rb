@@ -69,7 +69,7 @@ class PublishersController < ApplicationController
     # Authorization Policy
     def new_policy
       @publisher = Publisher.find(params[:id]) if params[:id].present?
-      PublishersPolicy.new([SubjectPolicyAgent.new(:User, current_user), PublisherPolicyAgent.new(@publisher)])
+      PublishersPolicy.new([SubjectPolicyAgent.new(:User, current_user), ObjectPolicyAgent.new(:Publisher, @publisher)])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

@@ -13,7 +13,7 @@ class PrivilegesController < ApplicationController
         if PolicyMaker.permit!(
           SubjectPolicyAgent.new(:User, user),
           RolePolicyAgent.new(:administrator), # privilege 1
-          NewspaperPolicyAgent.new(newspaper)
+          ObjectPolicyAgent.new(:Newspaper, newspaper)
         )
           format.html { redirect_to newspaper_path(newspaper), notice: 'Privilege was successfully permitted.' }
           format.json { head :no_content }
@@ -29,7 +29,7 @@ class PrivilegesController < ApplicationController
         if PolicyMaker.permit!(
           SubjectPolicyAgent.new(:User, user),
           RolePolicyAgent.new(:administrator),
-          PublisherPolicyAgent.new(publisher)
+          ObjectPolicyAgent.new(:Publisher, publisher)
         )
           format.html { redirect_to publisher_path(publisher), notice: 'Privilege was successfully permitted.' }
           format.json { head :no_content }
@@ -64,7 +64,7 @@ class PrivilegesController < ApplicationController
         if PolicyMaker.revoke!(
           SubjectPolicyAgent.new(:User, user),
           RolePolicyAgent.new(:administrator),
-          NewspaperPolicyAgent.new(newspaper)
+          ObjectPolicyAgent.new(:Newspaper, newspaper)
         )
           format.html { redirect_to newspaper_path(newspaper), notice: 'Privilege was successfully revoked.' }
           format.json { head :no_content }
@@ -80,7 +80,7 @@ class PrivilegesController < ApplicationController
         if PolicyMaker.revoke!(
           SubjectPolicyAgent.new(:User, user),
           RolePolicyAgent.new(:administrator),
-          PublisherPolicyAgent.new(publisher)
+          ObjectPolicyAgent.new(:Publisher, publisher)
         )
           format.html { redirect_to publisher_path(publisher), notice: 'Privilege was successfully revoked.' }
           format.json { head :no_content }
@@ -111,7 +111,7 @@ class PrivilegesController < ApplicationController
     # Authorization Policy
     def new_policy
       @privilege = Privilege.new(id: params[:id]) if params[:id].present?
-      PrivilegesPolicy.new([SubjectPolicyAgent.new(:User, current_user), PrivilegePolicyAgent.new(@privilege)])
+      PrivilegesPolicy.new([SubjectPolicyAgent.new(:User, current_user), ObjectPolicyAgent.new(:Privilege, @privilege)])
     end
 
   # Never trust parameters from the scary internet, only allow the white list through.

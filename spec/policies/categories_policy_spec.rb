@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe CategoriesPolicy, type: :policy do
   it_should_behave_like 'an application policy'
 
-  let(:category_agent) { CategoryPolicyAgent.new(category) }
+  let(:category_agent) { ObjectPolicyAgent.new(:Category, category) }
   let(:category) { double('category') }
 
   context 'Entity' do

@@ -7,7 +7,7 @@ RSpec.describe CategoryPresenter do
 
   let(:presenter) { described_class.new(user, policy, model) }
   let(:user) { build(:user) }
-  let(:policy) { CategoriesPolicy.new([SubjectPolicyAgent.new(:User, user), CategoryPolicyAgent.new(model)]) }
+  let(:policy) { CategoriesPolicy.new([SubjectPolicyAgent.new(:User, user), ObjectPolicyAgent.new(:Category, model)]) }
   let(:model) { build(:category, display_name: display_name, listings: listings) }
   let(:display_name) { nil }
   let(:listings) { [] }
@@ -87,7 +87,7 @@ RSpec.describe CategoryPresenter do
         expect(listing.user).to be user
         expect(listing.policy).to be_a(ListingsPolicy)
         expect(listing.policy.subject_agent).to be policy.subject_agent
-        expect(listing.policy.object_agent).to be_a(ListingPolicyAgent)
+        expect(listing.policy.object_agent).to be_a(ObjectPolicyAgent)
         expect(listing.policy.object_agent.client_type).to eq :Listing.to_s
         expect(listing.policy.object_agent.client).to be listings[index]
         expect(listing.model).to be listings[index]

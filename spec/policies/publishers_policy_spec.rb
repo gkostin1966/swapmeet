@@ -8,13 +8,13 @@ RSpec.describe PublishersPolicy, type: :policy do
   let(:entity_agent) { SubjectPolicyAgent.new(entity_type, entity) }
   let(:entity_type) { double('entity_type') }
   let(:entity) { double('entity') }
-  let(:publisher_agent) { PublisherPolicyAgent.new(publisher) }
+  let(:publisher_agent) { ObjectPolicyAgent.new(:Publisher, publisher) }
   let(:publisher) { double('publisher') }
 
   it_should_behave_like 'an application policy'
 
   context 'Entities except User' do
-    PoliciesHelper::ENTITY_TYPES.each do |entity_type|
+    SubjectPolicyAgent::SUBJECT_TYPES.each do |entity_type|
       next if %i[User].include?(entity_type)
 
       let(:entity_type) { entity_type }

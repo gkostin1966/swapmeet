@@ -29,7 +29,7 @@ RSpec.describe GroupsPresenter do
         expect(model_presenter.user).to be user
         expect(model_presenter.policy).to be_a(GroupsPolicy)
         expect(model_presenter.policy.subject_agent).to be policy.subject_agent
-        expect(model_presenter.policy.object_agent).to be_a(GroupPolicyAgent)
+        expect(model_presenter.policy.object_agent).to be_a(ObjectPolicyAgent)
         expect(model_presenter.policy.object_agent.client_type).to eq :Group.to_s
         expect(model_presenter.policy.object_agent.client).to be groups[index]
         expect(model_presenter.model).to be groups[index]

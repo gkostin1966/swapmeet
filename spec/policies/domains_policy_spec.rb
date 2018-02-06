@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe DomainsPolicy, type: :policy do
   it_should_behave_like 'an application policy'
 
-  let(:domain_agent) { DomainPolicyAgent.new(domain) }
+  let(:domain_agent) { ObjectPolicyAgent.new(:Domain, domain) }
   let(:domain) { double('domain') }
 
   context 'Entity' do

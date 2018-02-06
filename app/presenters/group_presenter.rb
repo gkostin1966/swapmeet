@@ -17,7 +17,7 @@ class GroupPresenter < ApplicationPresenter
   end
 
   def parent
-    GroupPresenter.new(user, GroupsPolicy.new([policy.subject_agent, GroupPolicyAgent.new(model.parent)]), model.parent)
+    GroupPresenter.new(user, GroupsPolicy.new([policy.subject_agent, ObjectPolicyAgent.new(:Group, model.parent)]), model.parent)
   end
 
   def groups

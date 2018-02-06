@@ -15,7 +15,7 @@ class ListingPresenter < ApplicationPresenter
   end
 
   def category
-    CategoryPresenter.new(user, CategoriesPolicy.new([policy.subject_agent, CategoryPolicyAgent.new(model.category)]), model.category)
+    CategoryPresenter.new(user, CategoriesPolicy.new([policy.subject_agent, ObjectPolicyAgent.new(:Category, model.category)]), model.category)
   end
 
   def categories
@@ -27,7 +27,7 @@ class ListingPresenter < ApplicationPresenter
   end
 
   def newspaper
-    NewspaperPresenter.new(user, NewspapersPolicy.new([policy.subject_agent, NewspaperPolicyAgent.new(model.newspaper)]), model.newspaper)
+    NewspaperPresenter.new(user, NewspapersPolicy.new([policy.subject_agent, ObjectPolicyAgent.new(:Newspaper, model.newspaper)]), model.newspaper)
   end
 
   def newspapers
@@ -39,6 +39,6 @@ class ListingPresenter < ApplicationPresenter
   end
 
   def owner
-    UserPresenter.new(user, UsersPolicy.new([policy.subject_agent, UserPolicyAgent.new(model.owner)]), model.owner)
+    UserPresenter.new(user, UsersPolicy.new([policy.subject_agent, ObjectPolicyAgent.new(:User, model.owner)]), model.owner)
   end
 end

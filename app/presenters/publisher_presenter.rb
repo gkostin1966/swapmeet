@@ -17,7 +17,7 @@ class PublisherPresenter < ApplicationPresenter
   end
 
   def domain
-    DomainPresenter.new(user, DomainsPolicy.new([policy.subject_agent, DomainPolicyAgent.new(model.domain)]), model.domain)
+    DomainPresenter.new(user, DomainsPolicy.new([policy.subject_agent, ObjectPolicyAgent.new(:Domain, model.domain)]), model.domain)
   end
 
   def domains
@@ -57,6 +57,6 @@ class PublisherPresenter < ApplicationPresenter
   end
 
   def users
-    @users_presenter ||= UsersPresenter.new(user, UsersPolicy.new(policy.agents.push(UserPolicyAgent.new(nil))), model.users)
+    @users_presenter ||= UsersPresenter.new(user, UsersPolicy.new(policy.agents.push(ObjectPolicyAgent.new(:User, nil))), model.users)
   end
 end

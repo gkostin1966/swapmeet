@@ -6,14 +6,14 @@ RSpec.describe PolicyResolver do
   let(:policy_resolver) { described_class.new(subject_agent_id, verb_agent_id, object_agent_id) }
 
   let(:subject_agent_any) { SubjectPolicyAgent.new(nil, nil) }
-  let(:subject_agent_type) { SubjectPolicyAgent.new(:Subject, nil) }
-  let(:subject_agent_id) { SubjectPolicyAgent.new(:Subject, :subject) }
+  let(:subject_agent_type) { SubjectPolicyAgent.new(:Entity, nil) }
+  let(:subject_agent_id) { SubjectPolicyAgent.new(:Entity, :subject) }
   let(:verb_agent_any) { VerbPolicyAgent.new(nil, nil) }
-  let(:verb_agent_type) { VerbPolicyAgent.new(:Verb, nil) }
-  let(:verb_agent_id) { VerbPolicyAgent.new(:Verb, :verb) }
+  let(:verb_agent_type) { VerbPolicyAgent.new(:Entity, nil) }
+  let(:verb_agent_id) { VerbPolicyAgent.new(:Entity, :verb) }
   let(:object_agent_any) { ObjectPolicyAgent.new(nil, nil) }
-  let(:object_agent_type) { ObjectPolicyAgent.new(:Object, nil) }
-  let(:object_agent_id) { ObjectPolicyAgent.new(::Object, :object) }
+  let(:object_agent_type) { ObjectPolicyAgent.new(:Entity, nil) }
+  let(:object_agent_id) { ObjectPolicyAgent.new(:Entity, :object) }
 
   describe '#grant?' do
     subject { policy_resolver.grant? }

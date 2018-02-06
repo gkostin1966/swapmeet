@@ -67,10 +67,10 @@ class UserPresenter < ApplicationPresenter
       next unless model.verb_id == administrator.verb_id
       next unless model.object_type == administrator.object_type
       next unless model.object_id == administrator.object_id
-      @privilege = PrivilegePresenter.new(user, PrivilegesPolicy.new(policy.agents + [PrivilegePolicyAgent.new(model)]), model)
+      @privilege = PrivilegePresenter.new(user, PrivilegesPolicy.new(policy.agents + [ObjectPolicyAgent.new(:Privilege, model)]), model)
       break
     end
-    @privilege ||= PrivilegePresenter.new(user, PrivilegesPolicy.new(policy.agents + [PrivilegePolicyAgent.new(administrator)]), administrator)
+    @privilege ||= PrivilegePresenter.new(user, PrivilegesPolicy.new(policy.agents + [ObjectPolicyAgent.new(:Privilege, administrator)]), administrator)
   end
 
   def privileges?
@@ -78,7 +78,7 @@ class UserPresenter < ApplicationPresenter
   end
 
   def privileges
-    @privileges_presenter ||= PrivilegesPresenter.new(user, PrivilegesPolicy.new(policy.agents + [PrivilegePolicyAgent.new(nil)]), Privilege.all)
+    @privileges_presenter ||= PrivilegesPresenter.new(user, PrivilegesPolicy.new(policy.agents + [ObjectPolicyAgent.new(:Privilege, nil)]), Privilege.all)
   end
 
   def user?

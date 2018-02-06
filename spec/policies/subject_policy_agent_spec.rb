@@ -9,7 +9,7 @@ RSpec.describe SubjectPolicyAgent do
   let(:entity) { double('entity') }
 
   it do
-    is_expected.to be_a(NounPolicyAgent)
+    is_expected.to be_a(PolicyAgent)
     expect(subject.client_type).to eq :Entity.to_s
     expect(subject.client_id).to eq entity.to_s
     expect(subject.client).to be entity
@@ -42,6 +42,27 @@ RSpec.describe SubjectPolicyAgent do
 
         it { is_expected.to be true }
       end
+    end
+  end
+
+  describe '#administrator?' do
+    subject { entity_agent.administrator? }
+
+    it { is_expected.to be false }
+
+    context 'administrator' do
+      before do
+        Gatekeeper.new(
+          subject_type: entity_agent.client_type,
+          subject_id: entity_agent.client_id,
+          verb_type: PolicyMaker::ROLE_ADMINISTRATOR.client_type,
+          verb_id: PolicyMaker::ROLE_ADMINISTRATOR.client_id,
+          object_type: PolicyMaker::OBJECT_ANY.client_type,
+          object_id: PolicyMaker::OBJECT_ANY.client_id
+        ).save!
+      end
+
+      it { is_expected.to be true }
     end
   end
 end

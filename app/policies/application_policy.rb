@@ -25,7 +25,18 @@ class ApplicationPolicy
 
   def authorize!(action, message = nil)
     return if send(action)
-    return if PolicyResolver.new(subject_agent, ActionPolicyAgent.new(action.to_s.chop.to_sym), object_agent).grant?
+    key = action.to_s.chop.to_sym
+    verb_agent =
+      if ActionPolicyAgent::ACTIONS.include?(key)
+        ActionPolicyAgent.new(key)
+      elsif PolicyPolicyAgent::POLICIES.include?(key)
+        PolicyPolicyAgent.new(key)
+      elsif RolePolicyAgent::ROLES.include?(key)
+        RolePolicyAgent.new(key)
+      else
+        VerbPolicyAgent.new(:Entity, key)
+      end
+    return if PolicyResolver.new(subject_agent, verb_agent, object_agent).grant?
     raise NotAuthorizedError.new(message)
   end
 
@@ -36,6 +47,17 @@ class ApplicationPolicy
 
   def method_missing(method_name, *args, &block)
     return super if method_name[-1] != '?'
-    PolicyResolver.new(subject_agent, ActionPolicyAgent.new(method_name.to_s.chop.to_sym), object_agent).grant?
+    key = method_name.to_s.chop.to_sym
+    verb_agent =
+      if ActionPolicyAgent::ACTIONS.include?(key)
+        ActionPolicyAgent.new(key)
+      elsif PolicyPolicyAgent::POLICIES.include?(key)
+        PolicyPolicyAgent.new(key)
+      elsif RolePolicyAgent::ROLES.include?(key)
+        RolePolicyAgent.new(key)
+      else
+        VerbPolicyAgent.new(:Entity, key)
+      end
+    PolicyResolver.new(subject_agent, verb_agent, object_agent).grant?
   end
 end

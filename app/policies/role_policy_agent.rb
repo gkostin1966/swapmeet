@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 class RolePolicyAgent < VerbPolicyAgent
-  def initialize(role)
-    super(:Role, role)
+  ROLES = %i[administrator]
+
+  def initialize(client)
+    raise VerbRoleError unless ROLES.include?(client) unless client == nil
+    super(:Role, client)
   end
 end

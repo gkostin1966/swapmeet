@@ -19,7 +19,7 @@ RSpec.describe GroupsController, type: :controller do
     end
 
     context 'unauthorized' do
-      let(:policy) { ControllersHelper::UnauthorizePolicy.new([SubjectPolicyAgent.new(:User, current_user), GroupPolicyAgent.new(group)]) }
+      let(:policy) { ControllersHelper::UnauthorizePolicy.new([SubjectPolicyAgent.new(:User, current_user), ObjectPolicyAgent.new(:Group, group)]) }
 
       it '#index' do
         get :index
@@ -104,7 +104,7 @@ RSpec.describe GroupsController, type: :controller do
     end
 
     context 'authorized' do
-      let(:policy) { ControllersHelper::AuthorizePolicy.new([SubjectPolicyAgent.new(:User, current_user), GroupPolicyAgent.new(group)]) }
+      let(:policy) { ControllersHelper::AuthorizePolicy.new([SubjectPolicyAgent.new(:User, current_user), ObjectPolicyAgent.new(:Group, group)]) }
       it '#index' do
         get :index
         expect(response).to have_http_status(:ok)

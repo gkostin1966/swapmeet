@@ -15,7 +15,7 @@ class PrivilegesPolicy < ApplicationPolicy
     return true if subject_agent.administrator?
     return true if PolicyResolver.new(subject_agent, PolicyMaker::ROLE_ADMINISTRATOR, agents[1]).grant? if agents.count > 3
     return true if PolicyResolver.new(subject_agent, PolicyMaker::ROLE_ADMINISTRATOR, agents[2]).grant? if agents.count > 4
-    PolicyResolver.new(subject_agent, ActionPolicyAgent.new(:permit), object_agent).grant?
+    PolicyResolver.new(subject_agent, PolicyPolicyAgent.new(:permit), object_agent).grant?
   end
 
   def revoke?
@@ -24,6 +24,6 @@ class PrivilegesPolicy < ApplicationPolicy
     return true if subject_agent.administrator?
     return true if PolicyResolver.new(subject_agent, PolicyMaker::ROLE_ADMINISTRATOR, agents[1]).grant? if agents.count > 3
     return true if PolicyResolver.new(subject_agent, PolicyMaker::ROLE_ADMINISTRATOR, agents[2]).grant? if agents.count > 4
-    PolicyResolver.new(subject_agent, ActionPolicyAgent.new(:revoke), object_agent).grant?
+    PolicyResolver.new(subject_agent, PolicyPolicyAgent.new(:revoke), object_agent).grant?
   end
 end

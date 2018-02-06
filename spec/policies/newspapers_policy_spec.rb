@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe NewspapersPolicy, type: :policy do
   it_should_behave_like 'an application policy'
 
-  let(:newspaper_agent) { NewspaperPolicyAgent.new(newspaper) }
+  let(:newspaper_agent) { ObjectPolicyAgent.new(:Newspaper, newspaper) }
   let(:newspaper) { double('newspaper') }
 
   context 'Entity' do
@@ -30,7 +30,6 @@ RSpec.describe NewspapersPolicy, type: :policy do
     describe '#role?' do
       it do
         expect(subject.administrator?).to be false
-        expect(subject.privilege?).to be false
       end
     end
   end
@@ -59,7 +58,6 @@ RSpec.describe NewspapersPolicy, type: :policy do
     describe '#role?' do
       it do
         expect(subject.administrator?).to be false
-        expect(subject.privilege?).to be false
       end
     end
 
@@ -81,7 +79,6 @@ RSpec.describe NewspapersPolicy, type: :policy do
       describe '#role?' do
         it do
           expect(subject.administrator?).to be false
-          expect(subject.privilege?).to be false
         end
       end
 
@@ -103,8 +100,7 @@ RSpec.describe NewspapersPolicy, type: :policy do
         describe '#role?' do
           before { PolicyMaker.permit!(user_agent, PolicyMaker::ROLE_ADMINISTRATOR, newspaper_agent) }
           it do
-            expect(subject.administrator?).to be false
-            expect(subject.privilege?).to be false
+            expect(subject.administrator?).to be true
           end
         end
 
@@ -114,7 +110,7 @@ RSpec.describe NewspapersPolicy, type: :policy do
         #     it { expect(subject.administrator?).to be true }
         #   end
         #   context 'publisher administrator' do
-        #     let(:publisher_agent) { PublisherPolicyAgent.new(publisher) }
+        #     let(:publisher_agent) { ObjectPolicyAgent.new(:Publisher, publisher) }
         #     let(:publisher) { double('publisher') }
         #     let(:policy_resolver) { double('policy resolver') }
         #     before do
