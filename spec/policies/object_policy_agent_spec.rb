@@ -10,6 +10,6 @@ RSpec.describe ObjectPolicyAgent do
 
   it { is_expected.to be_a(PolicyAgent) }
   it { expect(subject.client_type).to eq :Entity.to_s }
-  it { expect(subject.client_id).to eq entity.to_s }
+  it { expect(subject.client_id).to eq "anonymous" }
   it { expect(subject.client).to be entity }
 end

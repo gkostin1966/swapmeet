@@ -17,6 +17,18 @@ class User < ApplicationRecord
     new(username: '<guest>', display_name: 'Guest', email: '').tap(&:readonly!)
   end
 
+  def anonymous?
+    username == '<nobody>'
+  end
+
+  def authenticated?
+    username != '<nobody>'
+  end
+
+  def identified?
+    !anonymous? && authenticated? && username != '<guest>'
+  end
+
   def known?
     persisted?
   end

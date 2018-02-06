@@ -15,41 +15,26 @@ class Policy
     @agents.last
   end
 
-  def authorize!(action, message = nil)
-    return if send(action)
-    key = action.to_s.chop.to_sym
-    verb_agent =
-        if ActionPolicyAgent::ACTIONS.include?(key)
-          ActionPolicyAgent.new(key)
-        elsif PolicyPolicyAgent::POLICIES.include?(key)
-          PolicyPolicyAgent.new(key)
-        elsif RolePolicyAgent::ROLES.include?(key)
-          RolePolicyAgent.new(key)
-        else
-          VerbPolicyAgent.new(:Entity, key)
-        end
-    return if PolicyResolver.new(subject_agent, verb_agent, object_agent).grant?
+  def authorize!(verb, message = nil)
+    return if send(verb)
     raise NotAuthorizedError.new(message)
   end
 
   def respond_to_missing?(method_name, include_private = false)
-    return true if method_name[-1] == '?'
+    return super if method_name[-1] != '?'
+    method = method_name[0..-2].to_sym
+    return true if ActionPolicyAgent::ACTIONS.include?(method)
+    return true if PolicyPolicyAgent::POLICIES.include?(method)
+    return true if RolePolicyAgent::ROLES.include?(method)
     super
   end
 
   def method_missing(method_name, *args, &block)
     return super if method_name[-1] != '?'
-    key = method_name.to_s.chop.to_sym
-    verb_agent =
-        if ActionPolicyAgent::ACTIONS.include?(key)
-          ActionPolicyAgent.new(key)
-        elsif PolicyPolicyAgent::POLICIES.include?(key)
-          PolicyPolicyAgent.new(key)
-        elsif RolePolicyAgent::ROLES.include?(key)
-          RolePolicyAgent.new(key)
-        else
-          VerbPolicyAgent.new(:Entity, key)
-        end
-    PolicyResolver.new(subject_agent, verb_agent, object_agent).grant?
+    method = method_name[0..-2].to_sym
+    return false if ActionPolicyAgent::ACTIONS.include?(method)
+    return false if PolicyPolicyAgent::POLICIES.include?(method)
+    return false if RolePolicyAgent::ROLES.include?(method)
+    super
   end
 end

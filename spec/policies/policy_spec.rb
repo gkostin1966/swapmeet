@@ -13,23 +13,49 @@ RSpec.describe Policy, type: :policy do
   let(:object_agent) { ObjectPolicyAgent.new(:Entity, object_client) }
   let(:object_client) { double('object client') }
 
-  it '#respond_to? (a.k.a. #respond_to_missing?)' do
-    expect(subject.respond_to?(:action?)).to be true
-    expect(subject.respond_to?(:action)).to be false
+  describe '#respond_to? (a.k.a. #respond_to_missing?)' do
+    it do
+      expect(subject.respond_to?(:unknown?)).to be false
+      expect(subject.respond_to?(:unknown)).to be false
+      expect { subject.send(:unknown?) }.to raise_error(NoMethodError)
+      expect { subject.send(:unknown) }.to raise_error(NoMethodError)
+      expect { subject.authorize!(:unknown?, nil) }.to raise_error(NoMethodError)
+      expect { subject.authorize!(:unknown, nil) }.to raise_error(NoMethodError)
+    end
   end
 
-  describe '#verb?' do
-    it do
-      expect(subject.verb?).to be false
-      expect { subject.authorize!(:verb?, nil) }.to raise_error(NotAuthorizedError)
-      expect { subject.authorize!(:verb, nil) }.to raise_error(NoMethodError)
-    end
-    context 'permission' do
-      before { PolicyMaker.permit!(subject_agent, VerbPolicyAgent.new(:Entity, :verb), object_agent) }
+  describe 'actions' do
+    ActionPolicyAgent::ACTIONS.each do |action|
       it do
-        expect(subject.verb?).to be true
-        expect { subject.authorize!(:verb?, nil) }.not_to raise_error
-        expect { subject.authorize!(:verb, nil) }.to raise_error(NoMethodError)
+        expect(subject.respond_to?("#{action}?")).to be true
+        expect(subject.respond_to?("#{action}")).to be false
+        expect(subject.send("#{action}?")).to be false
+        expect { subject.authorize!(:"#{action}?", nil) }.to raise_error(NotAuthorizedError)
+        expect { subject.authorize!(:"#{action}", nil) }.to raise_error(NoMethodError)
+      end
+    end
+  end
+
+  describe 'policies' do
+    PolicyPolicyAgent::POLICIES.each do |policy|
+      it do
+        expect(subject.respond_to?("#{policy}?")).to be true
+        expect(subject.respond_to?("#{policy}")).to be false
+        expect(subject.send("#{policy}?")).to be false
+        expect { subject.authorize!(:"#{policy}?", nil) }.to raise_error(NotAuthorizedError)
+        expect { subject.authorize!(:"#{policy}", nil) }.to raise_error(NoMethodError)
+      end
+    end
+  end
+
+  describe 'roles' do
+    RolePolicyAgent::ROLES.each do |role|
+      it do
+        expect(subject.respond_to?("#{role}?")).to be true
+        expect(subject.respond_to?("#{role}")).to be false
+        expect(subject.send("#{role}?")).to be false
+        expect { subject.authorize!(:"#{role}?", nil) }.to raise_error(NotAuthorizedError)
+        expect { subject.authorize!(:"#{role}", nil) }.to raise_error(NoMethodError)
       end
     end
   end

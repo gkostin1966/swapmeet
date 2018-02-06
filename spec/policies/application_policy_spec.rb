@@ -10,7 +10,14 @@ RSpec.describe ApplicationPolicy, type: :policy do
   let(:subject_type) { :Entity }
   let(:object_agent) { ObjectPolicyAgent.new(:Entity, :entity) }
 
-  it { is_expected.to be_a ApplicationPolicy }
+  it do
+    is_expected.to be_a Policy
+    expect(subject.subject_user?).to be false
+    expect(subject.subject_anonymous_user?).to be false
+    expect(subject.subject_authenticated_user?).to be false
+    expect(subject.subject_identified_user?).to be false
+    expect(subject.subject_administrative_user?).to be false
+  end
 
   SubjectPolicyAgent::SUBJECT_TYPES.each do |subject_type|
     context "#{subject_type}" do
@@ -19,7 +26,7 @@ RSpec.describe ApplicationPolicy, type: :policy do
       if %i[User].include?(subject_type)
         [false, true].each do |authenticated|
           context "#authenticated? #{authenticated}" do
-            before { allow(subject_agent).to receive(:authenticated?).and_return(authenticated) }
+            before { allow(subject_agent).to receive(:client_instance_authenticated?).and_return(authenticated) }
             VerbPolicyAgent::VERB_TYPES.each do |verb_type|
               case verb_type
               when :Action
