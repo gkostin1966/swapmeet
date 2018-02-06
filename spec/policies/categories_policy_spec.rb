@@ -3,63 +3,134 @@
 require 'rails_helper'
 
 RSpec.describe CategoriesPolicy, type: :policy do
-  it_should_behave_like 'an application policy'
+  subject { policy }
 
-  let(:category_agent) { ObjectPolicyAgent.new(:Category, category) }
+  let(:policy) { described_class.new([subject_agent, object_agent]) }
+  let(:subject_agent) { SubjectPolicyAgent.new(:User, current_user) }
+  let(:current_user) { double('current user') }
+  let(:object_agent) { ObjectPolicyAgent.new(:Category, category) }
   let(:category) { double('category') }
 
-  context 'Entity' do
-    subject { described_class.new([entity_agent, category_agent]) }
+  it { is_expected.to be_a ApplicationPolicy }
 
-    let(:entity_agent) { SubjectPolicyAgent.new(:Entity, entity) }
-    let(:entity) { double('entity') }
-
-    it do
-      expect(subject.index?).to be false
-      expect(subject.show?).to be false
-      expect(subject.create?).to be false
-      expect(subject.update?).to be false
-      expect(subject.destroy?).to be false
+  context "Anonymous" do
+    before { allow(subject_agent).to receive(:authenticated?).and_return(false) }
+    VerbPolicyAgent::VERB_TYPES.each do |verb_type|
+      case verb_type
+      when :Action
+        ActionPolicyAgent::ACTIONS.each do |action|
+          context "#{action}?" do
+            if %i[action index show].include?(action)
+              it { expect(subject.send("#{action}?")).to be true }
+            else
+              it { expect(subject.send("#{action}?")).to be false }
+            end
+            context 'Grant' do
+              let(:action_agent) { ActionPolicyAgent.new(action) }
+              before { PolicyMaker.permit!(subject_agent, action_agent, object_agent) }
+              if %i[action index show].include?(action)
+                it { expect(subject.send("#{action}?")).to be true }
+              else
+                it { expect(subject.send("#{action}?")).to be false }
+              end
+            end
+          end
+        end
+      when :Entity
+        next
+      when :Policy
+        PolicyPolicyAgent::POLICIES.each do |policy|
+          context "#{policy}?" do
+            it { expect(subject.send("#{policy}?")).to be false }
+            context 'Grant' do
+              let(:policy_agent) { PolicyPolicyAgent.new(policy) }
+              before { PolicyMaker.permit!(subject_agent, policy_agent, object_agent) }
+              if %i[policy].include?(policy)
+                it { expect(subject.send("#{policy}?")).to be true }
+              else
+                it { expect(subject.send("#{policy}?")).to be false }
+              end
+            end
+          end
+        end
+      when :Role
+        RolePolicyAgent::ROLES.each do |role|
+          context "#{role}?" do
+            it { expect(subject.send("#{role}?")).to be false }
+            context 'Grant' do
+              let(:role_agent) { RolePolicyAgent.new(role) }
+              before { PolicyMaker.permit!(subject_agent, role_agent, object_agent) }
+              if %i[role].include?(role)
+                it { expect(subject.send("#{role}?")).to be true }
+              else
+                it { expect(subject.send("#{role}?")).to be false }
+              end
+            end
+          end
+        end
+      else
+        raise VerbTypeError
+      end
     end
   end
 
-  context 'User' do
-    subject { described_class.new([user_agent, category_agent]) }
-
-    let(:user_agent) { SubjectPolicyAgent.new(:User, user) }
-    let(:user) { double('user') }
-
-    before do
-      allow(user_agent).to receive(:authenticated?).and_return(false)
-    end
-
-    it do
-      expect(subject.index?).to be true
-      expect(subject.show?).to be true
-      expect(subject.create?).to be false
-      expect(subject.update?).to be false
-      expect(subject.destroy?).to be false
-    end
-
-    context 'Authenticated' do
-      before { allow(user_agent).to receive(:authenticated?).and_return(true) }
-      it do
-        expect(subject.index?).to be true
-        expect(subject.show?).to be true
-        expect(subject.create?).to be false
-        expect(subject.update?).to be false
-        expect(subject.destroy?).to be false
-      end
-
-      context 'Grant' do
-        before { PolicyMaker.permit!(PolicyMaker::USER_ANY, PolicyMaker::ACTION_ANY, PolicyMaker::OBJECT_ANY) }
-        it do
-          expect(subject.index?).to be true
-          expect(subject.show?).to be true
-          expect(subject.create?).to be true
-          expect(subject.update?).to be true
-          expect(subject.destroy?).to be true
+  context "Authenticated" do
+    before { allow(subject_agent).to receive(:authenticated?).and_return(true) }
+    VerbPolicyAgent::VERB_TYPES.each do |verb_type|
+      case verb_type
+      when :Action
+        ActionPolicyAgent::ACTIONS.each do |action|
+        context "#{action}?" do
+          if %i[action index show].include?(action)
+            it { expect(subject.send("#{action}?")).to be true }
+          else
+            it { expect(subject.send("#{action}?")).to be false }
+          end
+          context 'Grant' do
+            let(:action_agent) { ActionPolicyAgent.new(action) }
+            before { PolicyMaker.permit!(subject_agent, action_agent, object_agent) }
+            if %i[action index show create destroy update].include?(action)
+              it { expect(subject.send("#{action}?")).to be true }
+            else
+              it { expect(subject.send("#{action}?")).to be false }
+            end
+          end
         end
+      end
+      when :Entity
+        next
+      when :Policy
+        PolicyPolicyAgent::POLICIES.each do |policy|
+          context "#{policy}?" do
+            it { expect(subject.send("#{policy}?")).to be false }
+            context 'Grant' do
+              let(:policy_agent) { PolicyPolicyAgent.new(policy) }
+              before { PolicyMaker.permit!(subject_agent, policy_agent, object_agent) }
+              if %i[policy].include?(policy)
+                it { expect(subject.send("#{policy}?")).to be true }
+              else
+                it { expect(subject.send("#{policy}?")).to be false }
+              end
+            end
+          end
+        end
+      when :Role
+        RolePolicyAgent::ROLES.each do |role|
+          context "#{role}?" do
+            it { expect(subject.send("#{role}?")).to be false }
+            context 'Grant' do
+              let(:role_agent) { RolePolicyAgent.new(role) }
+              before { PolicyMaker.permit!(subject_agent, role_agent, object_agent) }
+              if %i[role].include?(role)
+                it { expect(subject.send("#{role}?")).to be true }
+              else
+                it { expect(subject.send("#{role}?")).to be false }
+              end
+            end
+          end
+        end
+      else
+        raise VerbTypeError
       end
     end
   end

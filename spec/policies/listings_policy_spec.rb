@@ -3,8 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe ListingsPolicy, type: :policy do
-  it_should_behave_like 'an application policy'
-
   let(:listing_agent) { ObjectPolicyAgent.new(:Listing, listing) }
   let(:listing) { double('listing') }
 

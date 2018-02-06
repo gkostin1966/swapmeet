@@ -6,167 +6,137 @@ RSpec.describe PublishersPolicy, type: :policy do
   subject { described_class.new([entity_agent, publisher_agent]) }
 
   let(:entity_agent) { SubjectPolicyAgent.new(entity_type, entity) }
-  let(:entity_type) { double('entity_type') }
-  let(:entity) { double('entity') }
+  let(:entity_type) { :Entity }
+  let(:entity) { :entity }
   let(:publisher_agent) { ObjectPolicyAgent.new(:Publisher, publisher) }
   let(:publisher) { double('publisher') }
 
-  it_should_behave_like 'an application policy'
+  it 'is an application policy' do
+    is_expected.to be_a ApplicationPolicy
+  end
 
-  context 'Entities except User' do
-    SubjectPolicyAgent::SUBJECT_TYPES.each do |entity_type|
-      next if %i[User].include?(entity_type)
+  SubjectPolicyAgent::SUBJECT_TYPES.each do |subject_type|
+    context "#{subject_type}" do
+      let(:entity_type) { subject_type }
 
-      let(:entity_type) { entity_type }
-
-      describe '#action?' do
-        it do
-          expect(subject.index?).to be false
-          expect(subject.show?).to be false
-          expect(subject.create?).to be false
-          expect(subject.update?).to be false
-          expect(subject.destroy?).to be false
-        end
-        it do
-          expect(subject.add?).to be false
-          expect(subject.remove?).to be false
-        end
-        context 'Grant' do
-          before { PolicyMaker.permit!(entity_agent, PolicyMaker::ACTION_ANY, publisher_agent) }
-          it do
-            expect(subject.index?).to be false
-            expect(subject.show?).to be false
-            expect(subject.create?).to be false
-            expect(subject.update?).to be false
-            expect(subject.destroy?).to be false
+      if %i[User].include?(subject_type)
+        [false, true].each do |authenticated|
+          context "#authenticated? #{authenticated}" do
+            before { allow(entity_agent).to receive(:authenticated?).and_return(authenticated) }
+            VerbPolicyAgent::VERB_TYPES.each do |verb_type|
+              case verb_type
+              when :Action
+                ActionPolicyAgent::ACTIONS.each do |action|
+                  context "#{action}?" do
+                    if %i[action index show].include?(action)
+                      it { expect(subject.send("#{action}?")).to be true }
+                    else
+                      it { expect(subject.send("#{action}?")).to be false }
+                    end
+                    context 'Grant' do
+                      let(:action_agent) { ActionPolicyAgent.new(action) }
+                      before { PolicyMaker.permit!(entity_agent, action_agent, publisher_agent) }
+                      if %i[action index show].include?(action)
+                        it { expect(subject.send("#{action}?")).to be true }
+                      else
+                        it { expect(subject.send("#{action}?")).to be authenticated }
+                      end
+                    end
+                  end
+                end
+              when :Entity
+                next
+              when :Policy
+                PolicyPolicyAgent::POLICIES.each do |policy|
+                  context "#{policy}?" do
+                    it { expect(subject.send("#{policy}?")).to be false }
+                    context 'Grant' do
+                      let(:policy_agent) { PolicyPolicyAgent.new(policy) }
+                      before { PolicyMaker.permit!(entity_agent, policy_agent, publisher_agent) }
+                      if %i[policy].include?(policy)
+                        it { expect(subject.send("#{policy}?")).to be true }
+                      else
+                        it { expect(subject.send("#{policy}?")).to be authenticated }
+                      end
+                    end
+                  end
+                end
+              when :Role
+                RolePolicyAgent::ROLES.each do |role|
+                  context "#{role}?" do
+                    it { expect(subject.send("#{role}?")).to be false }
+                    context 'Grant' do
+                      let(:role_agent) { RolePolicyAgent.new(role) }
+                      before { PolicyMaker.permit!(entity_agent, role_agent, publisher_agent) }
+                      if %i[role].include?(role)
+                        it { expect(subject.send("#{role}?")).to be true }
+                      else
+                        it { expect(subject.send("#{role}?")).to be authenticated }
+                      end
+                    end
+                  end
+                end
+              else
+                raise VerbTypeError
+              end
+            end
           end
-          it do
-            expect(subject.add?).to be false
-            expect(subject.remove?).to be false
-          end
         end
-      end
-
-      describe '#role?' do
-        it do
-          expect(subject.administrator?).to be false
-        end
-        context 'Grant' do
-          before { PolicyMaker.permit!(entity_agent, PolicyMaker::ROLE_ADMINISTRATOR, publisher_agent) }
-          it do
-            expect(subject.administrator?).to be false
+      else
+        VerbPolicyAgent::VERB_TYPES.each do |verb_type|
+          case verb_type
+          when :Action
+            ActionPolicyAgent::ACTIONS.each do |action|
+              context "#{action}?" do
+                it { expect(subject.send("#{action}?")).to be false }
+                context 'Grant' do
+                  let(:action_agent) { ActionPolicyAgent.new(action) }
+                  before { PolicyMaker.permit!(entity_agent, action_agent, publisher_agent) }
+                  if %i[action].include?(action)
+                    it { expect(subject.send("#{action}?")).to be true }
+                  else
+                    it { expect(subject.send("#{action}?")).to be false }
+                  end
+                end
+              end
+            end
+          when :Entity
+            next
+          when :Policy
+            PolicyPolicyAgent::POLICIES.each do |policy|
+              context "#{policy}?" do
+                it { expect(subject.send("#{policy}?")).to be false }
+                context 'Grant' do
+                  let(:policy_agent) { PolicyPolicyAgent.new(policy) }
+                  before { PolicyMaker.permit!(entity_agent, policy_agent, publisher_agent) }
+                  if %i[policy].include?(policy)
+                    it { expect(subject.send("#{policy}?")).to be true }
+                  else
+                    it { expect(subject.send("#{policy}?")).to be false }
+                  end
+                end
+              end
+            end
+          when :Role
+            RolePolicyAgent::ROLES.each do |role|
+              context "#{role}?" do
+                it { expect(subject.send("#{role}?")).to be false }
+                context 'Grant' do
+                  let(:role_agent) { RolePolicyAgent.new(role) }
+                  before { PolicyMaker.permit!(entity_agent, role_agent, publisher_agent) }
+                  if %i[role].include?(role)
+                    it { expect(subject.send("#{role}?")).to be true }
+                  else
+                    it { expect(subject.send("#{role}?")).to be false }
+                  end
+                end
+              end
+            end
+          else
+            raise VerbTypeError
           end
         end
       end
     end
   end
-
-  context 'User' do
-    let(:entity_type) { :User }
-
-    before { allow(entity_agent).to receive(:authenticated?).and_return(false) }
-
-    describe '#action?' do
-      it do
-        expect(subject.index?).to be true
-        expect(subject.show?).to be true
-        expect(subject.create?).to be false
-        expect(subject.update?).to be false
-        expect(subject.destroy?).to be false
-      end
-      it do
-        expect(subject.add?).to be false
-        expect(subject.remove?).to be false
-      end
-      context 'Grant' do
-        before { PolicyMaker.permit!(entity_agent, PolicyMaker::ACTION_ANY, publisher_agent) }
-        it do
-          expect(subject.index?).to be true
-          expect(subject.show?).to be true
-          expect(subject.create?).to be false
-          expect(subject.update?).to be false
-          expect(subject.destroy?).to be false
-        end
-        it do
-          expect(subject.add?).to be false
-          expect(subject.remove?).to be false
-        end
-      end
-    end
-
-    describe '#role?' do
-      it do
-        expect(subject.administrator?).to be false
-      end
-      context 'Grant' do
-        before { PolicyMaker.permit!(entity_agent, PolicyMaker::ROLE_ADMINISTRATOR, publisher_agent) }
-        it do
-          expect(subject.administrator?).to be false
-        end
-      end
-    end
-
-    context 'Authenticated' do
-      before { allow(entity_agent).to receive(:authenticated?).and_return(true) }
-
-      describe '#action?' do
-        it do
-          expect(subject.index?).to be true
-          expect(subject.show?).to be true
-          expect(subject.create?).to be false
-          expect(subject.update?).to be false
-          expect(subject.destroy?).to be false
-        end
-        it do
-          expect(subject.add?).to be false
-          expect(subject.remove?).to be false
-        end
-        context 'Grant' do
-          before { PolicyMaker.permit!(entity_agent, PolicyMaker::ACTION_ANY, publisher_agent) }
-          it do
-            expect(subject.index?).to be true
-            expect(subject.show?).to be true
-            expect(subject.create?).to be true
-            expect(subject.update?).to be true
-            expect(subject.destroy?).to be true
-          end
-          it do
-            expect(subject.add?).to be true
-            expect(subject.remove?).to be true
-          end
-        end
-      end
-
-      describe '#role?' do
-        it do
-          expect(subject.administrator?).to be false
-        end
-        context 'Grant' do
-          before { PolicyMaker.permit!(entity_agent, PolicyMaker::ROLE_ADMINISTRATOR, publisher_agent) }
-          it do
-            expect(subject.administrator?).to be true
-          end
-        end
-      end
-    end
-  end
-
-
-
-  # context 'administrator' do
-  #   describe '#administrator?' do
-  #     context 'platform administrator' do
-  #       before { allow(entity_agent).to receive(:administrator?).and_return(true) }
-  #       it { expect(subject.administrator?).to be true }
-  #     end
-  #     context 'publisher administrator' do
-  #       let(:policy_resolver) { double('policy resolver') }
-  #       before do
-  #         allow(PolicyResolver).to receive(:new).with(entity_agent, PolicyMaker::ROLE_ADMINISTRATOR, publisher_agent).and_return(policy_resolver)
-  #         allow(policy_resolver).to receive(:grant?).and_return(true)
-  #       end
-  #       it { expect(subject.administrator?).to be true }
-  #     end
-  #   end
-  # end
 end

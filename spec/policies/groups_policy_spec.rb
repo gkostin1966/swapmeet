@@ -3,8 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe GroupsPolicy, type: :policy do
-  it_should_behave_like 'an application policy'
-
   let(:group_agent) { ObjectPolicyAgent.new(:Group, group) }
   let(:group) { double('group') }
 

@@ -32,4 +32,12 @@ class ListingsPolicy < ApplicationPolicy
     return true if subject_agent.administrator?
     PolicyResolver.new(subject_agent, ActionPolicyAgent.new(:destroy), object_agent).grant?
   end
+
+  def add?
+    subject_agent.administrator?
+  end
+
+  def remove?
+    subject_agent.administrator?
+  end
 end

@@ -3,8 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe NewspapersPolicy, type: :policy do
-  it_should_behave_like 'an application policy'
-
   let(:newspaper_agent) { ObjectPolicyAgent.new(:Newspaper, newspaper) }
   let(:newspaper) { double('newspaper') }
 
@@ -103,32 +101,6 @@ RSpec.describe NewspapersPolicy, type: :policy do
             expect(subject.administrator?).to be true
           end
         end
-
-        # describe '#administrator?' do
-        #   context 'platform administrator' do
-        #     before { allow(user_agent).to receive(:administrator?).and_return(true) }
-        #     it { expect(subject.administrator?).to be true }
-        #   end
-        #   context 'publisher administrator' do
-        #     let(:publisher_agent) { ObjectPolicyAgent.new(:Publisher, publisher) }
-        #     let(:publisher) { double('publisher') }
-        #     let(:policy_resolver) { double('policy resolver') }
-        #     before do
-        #       allow(PolicyResolver).to receive(:new).and_call_original
-        #       allow(PolicyResolver).to receive(:new).with(user_agent, PolicyMaker::ROLE_ADMINISTRATOR, publisher_agent).and_return(policy_resolver)
-        #       allow(policy_resolver).to receive(:grant?).and_return(true)
-        #     end
-        #     xit { expect(subject.administrator?).to be true }
-        #   end
-        #   context 'newspaper administrator' do
-        #     let(:policy_resolver) { double('policy resolver') }
-        #     before do
-        #       allow(PolicyResolver).to receive(:new).with(user_agent, PolicyMaker::ROLE_ADMINISTRATOR, newspaper_agent).and_return(policy_resolver)
-        #       allow(policy_resolver).to receive(:grant?).and_return(true)
-        #     end
-        #     it { expect(subject.administrator?).to be true }
-        #   end
-        # end
       end
     end
   end

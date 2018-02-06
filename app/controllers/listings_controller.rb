@@ -8,10 +8,11 @@ class ListingsController < ApplicationController
 
     if params[:category_id].present?
       @category = Category.find(params[:category_id])
-      @category = CategoryPresenter.new(current_user, CategoriesPolicy.new([@policy.subject_agent, ObjectPolicyAgent.new(:Category, @category)]), @category)
+      @category = CategoryPresenter.new(current_user, CategoriesPolicy.new(@policy.agents.push(ObjectPolicyAgent.new(:Category, @category))), @category)
+      @policy.agents[-1], @policy.agents[-2] = @policy.agents[-2], @policy.agents[-1]
       @listings = Listing.where("category_id = ?", params[:category_id])
       @listings = ListingsPresenter.new(current_user, @policy, @listings)
-      render "categories/listings"
+      render "categories/listings/index"
     else
       if params[:f].present?
         @filter.newspaper = params[:f][:newspaper]

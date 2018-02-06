@@ -1,43 +1,11 @@
 # frozen_string_literal: true
 
-class ApplicationPolicy
-  attr_reader :agents
-
-  def initialize(agents)
-    @agents = agents
-  end
-
-  def subject_agent
-    @agents.first
-  end
-
-  def object_agent
-    @agents.last
-  end
-
-  def new?
-    create?
-  end
-
-  def edit?
-    update?
-  end
-
+class ApplicationPolicy < Policy
   def authorize!(action, message = nil)
     return if send(action)
-    key = action.to_s.chop.to_sym
-    verb_agent =
-      if ActionPolicyAgent::ACTIONS.include?(key)
-        ActionPolicyAgent.new(key)
-      elsif PolicyPolicyAgent::POLICIES.include?(key)
-        PolicyPolicyAgent.new(key)
-      elsif RolePolicyAgent::ROLES.include?(key)
-        RolePolicyAgent.new(key)
-      else
-        VerbPolicyAgent.new(:Entity, key)
-      end
-    return if PolicyResolver.new(subject_agent, verb_agent, object_agent).grant?
-    raise NotAuthorizedError.new(message)
+    raise NotAuthorizedError.new(message) unless subject_user?
+    return if subject_administrative_authenticated_user?
+    super
   end
 
   def respond_to_missing?(method_name, include_private = false)
@@ -47,17 +15,22 @@ class ApplicationPolicy
 
   def method_missing(method_name, *args, &block)
     return super if method_name[-1] != '?'
-    key = method_name.to_s.chop.to_sym
-    verb_agent =
-      if ActionPolicyAgent::ACTIONS.include?(key)
-        ActionPolicyAgent.new(key)
-      elsif PolicyPolicyAgent::POLICIES.include?(key)
-        PolicyPolicyAgent.new(key)
-      elsif RolePolicyAgent::ROLES.include?(key)
-        RolePolicyAgent.new(key)
-      else
-        VerbPolicyAgent.new(:Entity, key)
-      end
-    PolicyResolver.new(subject_agent, verb_agent, object_agent).grant?
+    false
   end
+
+  private
+
+    def subject_user?
+      subject_agent.client_type == :User.to_s
+    end
+
+    def subject_authenticated_user?
+      return false unless subject_user?
+      subject_agent.authenticated?
+    end
+
+    def subject_administrative_authenticated_user?
+      return false unless subject_authenticated_user?
+      subject_agent.administrator?
+    end
 end

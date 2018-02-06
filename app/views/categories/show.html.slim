@@ -30,4 +30,5 @@ p
           = link_to_if listing.show?, listing.label, listing.model
     - else
       li No Listings
-  = link_to 'Manage Listings', category_listings_path(@category.model)
+  - if @category.listings.add? || @category.listings.remove?
+    = link_to 'Manage Listings', category_listings_path(@category.model)

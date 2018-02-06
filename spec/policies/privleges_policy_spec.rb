@@ -3,8 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe PrivilegesPolicy, type: :policy do
-  it_should_behave_like 'an application policy'
-
   let(:privilege_agent) { ObjectPolicyAgent.new(:Privilege, privilege) }
   let(:privilege) { double('privilege') }
 

@@ -11,16 +11,34 @@ class PublishersPolicy < ApplicationPolicy
     true
   end
 
+  def new?
+    return false unless subject_authenticated_user?
+    return true if subject_administrative_authenticated_user?
+    PolicyResolver.new(subject_agent, ActionPolicyAgent.new(:new), object_agent).grant?
+  end
+
   def create?
     return false unless subject_authenticated_user?
     return true if subject_administrative_authenticated_user?
     PolicyResolver.new(subject_agent, ActionPolicyAgent.new(:create), object_agent).grant?
   end
 
+  def edit?
+    return false unless subject_authenticated_user?
+    return true if subject_administrative_authenticated_user?
+    PolicyResolver.new(subject_agent, ActionPolicyAgent.new(:edit), object_agent).grant?
+  end
+
   def update?
     return false unless subject_authenticated_user?
     return true if subject_administrative_authenticated_user?
     PolicyResolver.new(subject_agent, ActionPolicyAgent.new(:update), object_agent).grant?
+  end
+
+  def delete?
+    return false unless subject_authenticated_user?
+    return true if subject_administrative_authenticated_user?
+    PolicyResolver.new(subject_agent, ActionPolicyAgent.new(:delete), object_agent).grant?
   end
 
   def destroy?
@@ -43,6 +61,34 @@ class PublishersPolicy < ApplicationPolicy
     return true if subject_agent.administrator?
     return true if PolicyResolver.new(subject_agent, PolicyMaker::ROLE_ADMINISTRATOR, object_agent).grant?
     PolicyResolver.new(subject_agent, ActionPolicyAgent.new(:remove), object_agent).grant?
+  end
+
+  def join?
+    return false unless subject_agent.client_type == :User.to_s
+    return false unless subject_agent.authenticated?
+    return true if subject_agent.administrator?
+    return true if PolicyResolver.new(subject_agent, PolicyMaker::ROLE_ADMINISTRATOR, object_agent).grant?
+    PolicyResolver.new(subject_agent, ActionPolicyAgent.new(:join), object_agent).grant?
+  end
+
+  def leave?
+    return false unless subject_agent.client_type == :User.to_s
+    return false unless subject_agent.authenticated?
+    return true if subject_agent.administrator?
+    return true if PolicyResolver.new(subject_agent, PolicyMaker::ROLE_ADMINISTRATOR, object_agent).grant?
+    PolicyResolver.new(subject_agent, ActionPolicyAgent.new(:leave), object_agent).grant?
+  end
+
+  def permit?
+    return false unless subject_authenticated_user?
+    return true if subject_administrative_authenticated_user?
+    PolicyResolver.new(subject_agent, PolicyPolicyAgent.new(:permit), object_agent).grant?
+  end
+
+  def revoke?
+    return false unless subject_authenticated_user?
+    return true if subject_administrative_authenticated_user?
+    PolicyResolver.new(subject_agent, PolicyPolicyAgent.new(:revoke), object_agent).grant?
   end
 
   def administrator?
