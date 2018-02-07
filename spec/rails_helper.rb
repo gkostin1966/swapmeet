@@ -29,10 +29,12 @@ require 'rspec/rails'
 ActiveRecord::Migration.maintain_test_schema!
 
 require_relative 'support/controllers_helper'
+require_relative 'support/policies_helper'
 
 RSpec.configure do |config|
   config.include ControllersHelper, type: :controller
   config.include ControllersHelper, type: :view
+  config.include PoliciessHelper, type: :policy
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
