@@ -1,5 +1,0 @@
-# Settings appropriate for running Swapmeet in production
-
-# Don't try to look up any reloaded presenter classes between requests.
-# Reloading will generally be off in production, but explicitly avoid lookup.
-cache_presenters: true

@@ -1,4 +1,4 @@
-= form_for @newspaper do |f|
+= form_for @newspaper.model do |f|
   - if @newspaper.errors.any?
     #error_explanation
       h2 = "#{pluralize(@newspaper.errors.count, "error")} prohibited this newspaper from being saved:"
@@ -14,5 +14,9 @@
     = f.text_field :display_name
   .field
     = f.label :publisher
-    = f.collection_select :publisher_id, Publisher.all, :id, :name, prompt: "Select a Publisher"
+    - if @newspaper.publisher?
+      = f.select :publisher_id, @newspaper.publishers, {}, disabled: @newspaper.persisted?
+      = f.hidden_field :publisher_id, value: @newspaper.publisher.id
+    - else
+      = f.select :publisher_id, @newspaper.publishers, prompt: "Select a Publisher"
   .actions = f.submit

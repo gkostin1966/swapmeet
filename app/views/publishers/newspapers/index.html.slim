@@ -1,0 +1,19 @@
+h1 Publisher newspapers
+
+p#notice = notice
+
+table
+  thead
+    tr
+      th Name
+      th Member
+  tbody
+    - @newspapers.each do |newspaper|
+      tr
+        td = link_to_if newspaper.show?, newspaper.label, newspaper.model
+        - if newspaper.newspaper?
+          td Yes
+          td = link_to 'Remove', remove_publisher_newspaper_path(@publisher.model, newspaper.model), method: :delete if newspaper.remove?
+        - else
+          td No
+          td = link_to 'Add', add_publisher_newspaper_path(@publisher.model, newspaper.model), method: :patch if newspaper.add?

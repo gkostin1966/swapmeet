@@ -1,0 +1,74 @@
+h1 Publisher
+
+p#notice = notice
+
+p
+  strong Name:&nbsp
+  = @publisher.name
+p
+  strong Display name:&nbsp
+  = @publisher.display_name
+p
+  strong Domain:&nbsp
+  = link_to_if @publisher.domain.show?, @publisher.domain.label, @publisher.domain.model if @publisher.domain?
+
+- if @publisher.edit?
+  => link_to 'Edit', edit_publisher_path(@publisher.model)
+  '|
+- if @publisher.destroy?
+  =<> link_to 'Delete', @publisher.model, data: { confirm: 'Are you sure?' }, method: :delete
+  '|
+=< link_to 'Back', publishers_path
+
+- if @publisher.newspapers.index?
+  hr
+  h2 Newspapers
+  ul
+    - if @publisher.newspapers?
+      - @publisher.newspapers.each do |newspaper|
+        li
+          = link_to_if newspaper.show?, newspaper.label, publisher_newspaper_path(@publisher.model, newspaper.model)
+    - else
+      li No Newspapers
+  = link_to 'Manage newspapers', publisher_newspapers_path(@publisher.model)
+
+- if @publisher.groups.index?
+  hr
+  h2 Groups
+  ul
+    - if @publisher.groups?
+      - @publisher.groups.each do |group|
+        li
+          = link_to_if group.show?, group.label, group.model
+    - else
+      li No Groups
+  = link_to 'Manage groups', publisher_groups_path(@publisher.model)
+
+- if @publisher.users.index?
+  hr
+  h2 Users
+  table
+    thead
+      tr
+        th Name
+        th Email
+        th Administrator
+    tbody
+    - if @publisher.users?
+      - @publisher.users.each do |user|
+        tr
+          td = link_to_if user.show?, user.label, user.model
+          td = user.email
+          - if user.privilege?
+            td Yes
+            td = link_to 'Revoke', revoke_publisher_user_privilege_path(@publisher.model, user.model, user.privilege.model.id), method: :delete if user.privilege.revoke?
+          - else
+            td No
+            td = link_to 'Permit', permit_publisher_user_privilege_path(@publisher.model, user.model, user.privilege.model.id), method: :patch if user.privilege.permit?
+    - else
+      tr
+        td
+        td No Users
+        td
+  -if @publisher.users.add? || @publisher.users.remove?
+    = link_to 'Manage users', publisher_users_path(@publisher.model)

@@ -1,0 +1,19 @@
+h1 Publisher groups
+
+p#notice = notice
+
+table
+  thead
+    tr
+      th Name
+      th Member
+  tbody
+    - @groups.each do |group|
+      tr
+        td = link_to_if group.show?, group.label, group.model
+        - if group.child?
+          td Yes
+          td = link_to 'Remove', remove_publisher_group_path(@publisher.model, group.model), method: :delete if group.remove?
+        - else
+          td No
+          td = link_to 'Add', add_publisher_group_path(@publisher.model, group.model), method: :patch if group.add?

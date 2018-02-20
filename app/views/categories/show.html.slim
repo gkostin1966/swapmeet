@@ -1,0 +1,34 @@
+h1 Category
+
+p#notice = notice
+
+p
+  strong Name:&nbsp
+  = @category.name
+p
+  strong Display name:&nbsp
+  = @category.display_name
+p
+  strong Title:&nbsp
+  = @category.title
+
+- if @category.edit?
+  => link_to 'Edit', edit_category_path(@category.model)
+  '|
+- if @category.destroy?
+  =<> link_to 'Delete', @category.model, data: { confirm: 'Are you sure?' }, method: :delete
+  '|
+=< link_to 'Back', categories_path
+
+- if @category.listings.index?
+  hr
+  h2 Listings
+  ul
+    - if @category.listings?
+      - @category.listings.each do |listing|
+        li
+          = link_to_if listing.show?, listing.label, listing.model
+    - else
+      li No Listings
+  - if @category.listings.add? || @category.listings.remove?
+    = link_to 'Manage Listings', category_listings_path(@category.model)

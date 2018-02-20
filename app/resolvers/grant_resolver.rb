@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
-require 'agent_resolver'
+require 'subject_resolver'
 require 'credential_resolver'
 require 'resource_resolver'
-require 'grant_repository'
 
 class GrantResolver
   attr_reader :user, :action, :target, :grants
-  attr_writer :agent_resolver, :credential_resolver, :resource_resolver, :repository
+  attr_writer :subject_resolver, :credential_resolver, :resource_resolver, :repository
 
   def initialize(user, action, target)
     @user = user
@@ -16,29 +15,11 @@ class GrantResolver
   end
 
   def any?
-    # Conceptually equivalent to:
-    #   can?(agent, action, target)
-    #   can?(current_user, 'edit', @listing)
-
-    #  user   => agent tokens
-    #  action => credential tokens
-    #  target => resource tokens
-
-    # Grant.where(agent: agents, credential: credentials, resource: resources)
+    # Grant.where(subject: subjects, credential: credentials, resource: resources)
     # SELECT * FROM grants
-    # WHERE agent IN('user:gkostin', 'account-type:umich', 'affiliation:lib-staff')
-    # AND credential IN('permission:edit', 'role:editor')
+    # WHERE subject IN('user:gkostin', 'account-type:umich', 'affiliation:lib-staff')
+    # AND credential IN('permission:edit')
     # AND resource IN('listing:17', 'type:listing')
-
-    #  agent_type, agent_id    | cred_type, cred_id | resource_type, resource_id
-    #  ------------------------------------------------------------------------
-    #  'user:gkostin'          | 'permission:edit'  | 'listing:17'
-    #  'account-type:umich'    | 'role:editor'      | 'type:listing'
-    #  'affiliation:lib-staff' |                    | 'listing:*'
-
-    #        ^^^                       ^^^^              ^^^^
-    #   if current_user has at least one row in each of of these columns,
-    #   they have been "granted permission"
 
     grants.any?
   end
@@ -46,11 +27,11 @@ class GrantResolver
   private
 
     def grants
-      repository.grants_for(agents, credentials, resources)
+      repository.grants_for(subjects, credentials, resources)
     end
 
-    def agents
-      agent_resolver.resolve(user)
+    def subjects
+      subject_resolver.resolve(user)
     end
 
     def credentials
@@ -61,8 +42,8 @@ class GrantResolver
       resource_resolver.resolve(target)
     end
 
-    def agent_resolver
-      @agent_resolver ||= AgentResolver.new
+    def subject_resolver
+      @subject_resolver ||= SubjectResolver.new
     end
 
     def credential_resolver

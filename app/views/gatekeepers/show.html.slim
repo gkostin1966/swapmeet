@@ -1,0 +1,17 @@
+h1 Gatekeeper
+
+p#notice = notice
+
+p
+  strong Subject:&nbsp
+  = @gatekeeper.subject_type
+p
+  strong Verb:&nbsp
+  = @gatekeeper.verb_type
+p
+  strong Object:&nbsp
+  = @gatekeeper.object_type
+
+=> link_to 'Edit', edit_gatekeeper_path(@gatekeeper)
+'|
+=< link_to 'Back', gatekeepers_path

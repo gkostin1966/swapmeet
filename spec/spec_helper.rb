@@ -7,8 +7,8 @@ end
 if coverage_needed?
   require 'coveralls'
   Coveralls.wear!('rails') do
-    # add_filter 'config'
-    # add_filter 'spec'
+    add_filter 'config'
+    add_filter 'spec'
   end
 end
 
