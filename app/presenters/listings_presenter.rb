@@ -1,12 +1,18 @@
 # frozen_string_literal: true
 
-class ListingsPresenter < ApplicationsPresenter
-  delegate :add?, :remove?, to: :policy
-
-  def initialize(user, policy, listings)
-    presenters = listings.map do |listing|
-      ListingPresenter.new(user, ListingsPolicy.new([policy.subject_agent, ObjectPolicyAgent.new(:Listing, listing)]), listing)
-    end
-    super(user, policy, listings, presenters)
+class ListingsPresenter < CollectionPresenter
+  def new?
+    policy.new?
   end
+
+  private
+
+    # `present` can be implemented to use something other than the default
+    # presenter and policy resolution.
+    #
+    # def present(resource)
+    #   SpecializedListingPresenter.new(policy.for(listing), view)
+    # end
+
+    alias_method :listings, :resources
 end

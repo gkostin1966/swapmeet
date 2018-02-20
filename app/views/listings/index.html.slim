@@ -1,35 +1,27 @@
 h1 Office Gear Swap Meet!
 
 - if @listings.empty?
-  h2 No Listings
+    h2 No listings yet. :(
 - else
-  table
-    thead
-      tr
-        th Title
-        th Newspaper
-        th Owner
-        th Category
-    tbody
-      = form_for @filter, as: :f, method: :get, url: listings_path, html: { id: 'filter' } do |form|
-        td
-        td = form.select :newspaper, @filter.newspapers, include_blank: true
-        td = form.select :owner, @filter.owners, include_blank: true
-        td = form.select :category, @filter.categories, include_blank: true
-        td = form.submit 'Filter'
-        td
-        td
+    table
+      thead
+        tr
+          th Title
+          / th Newspaper
+          th Owner
+          th
+          th
+          th
+
+      tbody
         - @listings.each do |listing|
           tr
-            td = link_to_if listing.show?, listing.label, listing.model
-            td = link_to_if listing.newspaper.show?, listing.newspaper.label, listing.newspaper.model
-            td = link_to_if listing.owner.show?, listing.owner.label, listing.owner.model
-            td = listing.category.label
-            td = link_to 'Show', listing.model if listing.show?
-            td = link_to 'Edit', edit_listing_path(listing.model) if listing.edit?
-            td = link_to 'Destroy', listing.model, data: { confirm: 'Are you sure?' }, method: :delete if listing.destroy?
+            td = listing.link_or_title
+            td = listing.owner.display_name_link
 
-br
+            td = listing.show_link
+            td = link_to 'Edit', edit_listing_path(listing) if listing.edit?
+            td = link_to 'Destroy', listing, data: { confirm: 'Are you sure?' }, method: :delete if listing.destroy?
 
 - if @listings.new?
-  = link_to 'New listing', new_listing_path
+  = link_to 'Make a new listing', new_listing_path

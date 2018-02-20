@@ -2,31 +2,24 @@
 
 require 'rails_helper'
 
-RSpec.describe Listing, type: :model do
-  describe '#new' do
-    context 'new' do
-      subject { described_class.new }
-      it do
-        is_expected.not_to be_nil
-        is_expected.to be_a Listing
-        expect(subject.title).to be_nil
-        expect(subject.body).to be_nil
-        expect(subject.owner_id).to be_nil
-        expect(subject.newspaper_id).to be_nil
-        expect(subject.category_id).to be_nil
-      end
+RSpec.describe Listing do
+  subject(:listing) { Listing.new }
+
+  describe "#new" do
+    it "starts with blank attributes" do
+      expect(listing.id)   .to be_nil
+      expect(listing.title).to be_nil
+      expect(listing.body) .to be_nil
     end
-    context 'create' do
-      subject { create(:listing, title: 'Title', body: 'Body') }
-      it do
-        is_expected.not_to be_nil
-        is_expected.to be_a Listing
-        expect(subject.title).to eq 'Title'
-        expect(subject.body).to eq 'Body'
-        expect(subject.owner_id).not_to be_nil
-        expect(subject.newspaper_id).not_to be_nil
-        expect(subject.category_id).not_to be_nil
-      end
-    end
+  end
+
+  it "supports setting and reading the title" do
+    listing.title = 'Onyx Chop Sticks'
+    expect(listing.title).to eq('Onyx Chop Sticks')
+  end
+
+  it "supports setting and reading the body" do
+    listing.body = 'A fine pair of chop sticks, made of pure onyx.'
+    expect(listing.body).to eq('A fine pair of chop sticks, made of pure onyx.')
   end
 end

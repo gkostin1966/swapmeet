@@ -8,87 +8,30 @@ p
 p
   strong Display name:&nbsp
   = @user.display_name
-p
-  strong Username:&nbsp
-  = @user.username
 
-- if @user.edit?
-  => link_to 'Edit', edit_user_path(@user.model)
+- if @policy.edit?
+  => link_to 'Edit', edit_user_path(@user)
   '|
-- if @user.destroy?
-  =<> link_to 'Delete', @user.model, data: { confirm: 'Are you sure?' }, method: :delete
+- if @policy.destroy?
+  =<> link_to 'Delete', @user, data: { confirm: 'Are you sure?' }, method: :delete
   '|
 =< link_to 'Back', users_path
 
+/ - unless @user.groups.empty?
+/   hr
+/   h2 Groups
+/   ul
+/   - @user.groups.each do |group|
+/     li
+/       => link_to group.display_name, group_path(group)
+/       - if @policy.leave?
+/       =<> ' '
+/       =< link_to 'Leave', leave_group_user_path(group, @user), method: :delete
 
-- if @user.privileges.index?
-  hr
-  h2 Privileges
-  ul
-    - if @user.privileges?
-      - @user.privileges.each do |privilege|
-        li
-          => link_to_if privilege.show?, privilege.label, privilege.model
-          - if privilege.revoke?
-            =<> ' '
-            =< link_to 'Revoke', revoke_user_privilege_path(privilege.model.subject_id, privilege.model.id), method: :delete
-    - else
-      li No Privileges
-
-- if @user.groups.index?
-  hr
-  h2 Groups
-  ul
-    - if @user.groups?
-      - @user.groups.each do |group|
-        li
-          => link_to_if group.show?, group.label, group.model
-          - if group.user.leave?
-            =<> ' '
-            =< link_to 'Leave', leave_group_user_path(group.model, @user.model), method: :delete
-    - else
-      li No Groups
-  = link_to 'Manage groups', user_groups_path(@user.model)
-
-- if @user.listings.index?
+- unless @user.listings.empty?
   hr
   h2 Listings
   ul
-    - if @user.listings?
-      - @user.listings.each do |listing|
-        li
-          = link_to_if listing.show?, listing.label, listing.model
-    - else
-      li No Listings
-  = link_to 'Manage listings', user_listings_path(@user.model)
-
-- if @user.newspapers.index?
-  hr
-  h2 Newspapers
-  ul
-    - if @user.newspapers?
-      - @user.newspapers.each do |newspaper|
-        li
-          => link_to_if newspaper.show?, newspaper.label, newspaper.model
-          - if newspaper.remove?
-            =<> ' '
-            =< link_to 'Remove', remove_newspaper_user_path(newspaper.model, @user.model), method: :delete
-    - else
-      li No Newspapers
-  = link_to 'Manage newspapers', user_newspapers_path(@user.model)
-
-- if @user.publishers.index?
-  hr
-  h2 Publishers
-  ul
-    - if @user.publishers?
-      - @user.publishers.each do |publisher|
-        li
-          => link_to_if publisher.show?, publisher.label, publisher.model
-          - if publisher.remove?(@user)
-            =<> ' '
-            =< link_to 'Remove', remove_publisher_user_path(publisher.model, @user.model), method: :delete
-    - else
-      li No Publishers
-  = link_to 'Manage publishers', user_publishers_path(@user.model)
+  - @user.listings.first(@user.listings.count).each do |listing|
+    li = link_to listing.title, listing_path(listing)
 

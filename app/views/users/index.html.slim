@@ -1,32 +1,26 @@
 h1 Listing users
 
-- if @users.empty?
-  h2 No Users
-- else
-  table
-    thead
+table
+  thead
+    tr
+      th Name
+      th Email
+      th Login
+      th
+      th
+      th
+  tbody
+    - @users.each do |user|
       tr
-        th Login
-        th User
-        th Email
-        th Admin
-    tbody
-      - @users.each do |user|
-        tr
-          td = link_to 'Login', login_path(user.model), method: :post
-          td = user.label
-          td = user.email
-          - if user.privilege?
-            td Yes
-            td = link_to 'Revoke', revoke_user_privilege_path(user.model, user.privilege.model.id), method: :delete if user.privilege.revoke?
-          - else
-            td No
-            td = link_to 'Permit', permit_user_privilege_path(user.model, user.privilege.model.id), method: :patch if user.privilege.permit?
-          td = link_to 'Show', user.model if user.show?
-          td = link_to 'Edit', edit_user_path(user.model) if user.edit?
-          td = link_to 'Destroy', user.model, data: { confirm: 'Are you sure?' }, method: :delete if user.destroy?
+        td = user.display_name
+        td = link_to user.email, user
+        td = link_to 'Login', login_path(user), method: :post
+        - if @policy.show?(user)
+          td = link_to 'Show', user
+        - if @policy.edit?(user)
+          td = link_to 'Edit', edit_user_path(user)
+        - if @policy.destroy?(user)
+          td = link_to 'Destroy', user, data: { confirm: 'Are you sure?' }, method: :delete
 
-br
-
-- if @users.new?
-  = link_to 'New User', new_user_path
+- if @policy.new?
+= link_to 'New User', new_user_path

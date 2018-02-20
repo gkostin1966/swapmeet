@@ -8,22 +8,29 @@ class ApplicationController < ActionController::Base
   helper_method :logged_in?
 
   rescue_from NotAuthorizedError, with: :render_unauthorized
-  before_action :set_policy
+
+  def indexes
+  end
 
   protected
 
+    def present(object)
+      Services.presenters[object, current_user, view_context]
+    end
+
     def auto_login(user)
-      @current_user = nil
       session[:user_id] = user.id
     end
 
     def logout!
-      @current_user = nil
       session[:user_id] = nil
     end
 
     def current_user
-      @current_user ||= user_from_session || User.guest
+      unless defined?(@current_user)
+        @current_user = user_from_session || User.guest
+      end
+      @current_user
     end
 
     def logged_in?
@@ -39,14 +46,5 @@ class ApplicationController < ActionController::Base
         format.html { render 'unauthorized', status: :unauthorized }
         format.json { head :unauthorized }
       end
-    end
-
-    def set_policy
-      @policy = new_policy
-    end
-
-    # Authorization Policy
-    def new_policy
-      ApplicationPolicy.new([SubjectPolicyAgent.new(:User, current_user), nil])
     end
 end

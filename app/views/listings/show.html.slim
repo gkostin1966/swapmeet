@@ -10,18 +10,15 @@ p
   = @listing.body
 p
   strong Owner:&nbsp
-  = link_to_if @listing.owner.show?, @listing.owner.label, @listing.owner.model
+  = @listing.owner.display_name_link
 p
   strong Category:&nbsp
-  = link_to_if @listing.category.show?, @listing.category.label, @listing.category.model
-p
-  strong Newspaper:&nbsp
-  = link_to @listing.newspaper.label, @listing.newspaper.model
+  = @listing.category.title
 
 - if @listing.edit?
-  =<> link_to 'Edit', edit_listing_path(@listing.model)
+  =<> link_to 'Edit', edit_listing_path(@listing)
   '|
 - if @listing.destroy?
-  =<> link_to 'Delete', @listing.model, data: { confirm: 'Are you sure?' }, method: :delete
+  =<> link_to 'Delete', @listing, data: { confirm: 'Are you sure?' }, method: :delete
   '|
 =<> link_to 'Back', listings_path
