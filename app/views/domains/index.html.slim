@@ -1,0 +1,23 @@
+h1 Listing domains
+
+- if @domains.empty?
+  h2 No Domains
+- else
+  table
+    thead
+      tr
+        th Domain
+        th Parent
+    tbody
+      - @domains.each do |domain|
+        tr
+          td = link_to_if domain.show?, domain.label, domain.model
+          td = link_to_if domain.parent.show?, domain.parent.label, domain.parent.model if domain.parent?
+          td = link_to 'Show', domain.model if domain.show?
+          td = link_to 'Edit', edit_domain_path(domain.model) if domain.edit?
+          td = link_to 'Destroy', domain.model, data: { confirm: 'Are you sure?' }, method: :delete if domain.destroy?
+
+br
+
+- if @domains.new?
+  = link_to 'New Domain', new_domain_path

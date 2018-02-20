@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 PRESENTERS = {
-  Listing => [ListingPresenter, ListingPolicy],
-  User    => [UserPresenter, Vizier::ReadOnlyPolicy],
-  'Listing::ActiveRecord_Relation' => [ListingsPresenter, ListingsPolicy],
+  # Listing => [ListingPresenter, ListingPolicy],
+  # User    => [UserPresenter, Vizier::ReadOnlyPolicy],
+  # 'Listing::ActiveRecord_Relation' => [ListingsPresenter, ListingsPolicy],
 }
 
 if Swapmeet.config.cache_presenters

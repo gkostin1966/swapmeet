@@ -1,30 +1,26 @@
 h1 Listing newspapers
 
-table
-  thead
-    tr
-      th Name
-      th Display name
-      th Publisher
-      - if @policy.show?
-        th
-      - if @policy.edit?
-        th
-      - if @policy.destroy?
-        th
-
-  tbody
-    - @newspapers.each do |newspaper|
+- if @newspapers.empty?
+  h2 No Newspapers
+- else
+  table
+    thead
       tr
-        td = newspaper.name
-        td = newspaper.display_name
-        td = link_to newspaper.publisher&.display_name, publisher_path(newspaper.publisher) if newspaper.publisher
-        - if @policy.show?
-          td = link_to 'Show', newspaper
-        - if @policy.edit?
-          td = link_to 'Edit', edit_newspaper_path(newspaper)
-        - if @policy.destroy?
-          td = link_to 'Destroy', newspaper, data: { confirm: 'Are you sure?' }, method: :delete
+        th Newspaper
+        th Publisher
+        th
+        th
+        th
+    tbody
+      - @newspapers.each do |newspaper|
+        tr
+          td = link_to_if newspaper.show?, newspaper.label, newspaper.model
+          td = link_to_if newspaper.publisher.show?, newspaper.publisher.label, newspaper.publisher.model if newspaper.publisher?
+          td = link_to 'Show', newspaper.model if newspaper.show?
+          td = link_to 'Edit', edit_newspaper_path(newspaper.model) if newspaper.edit?
+          td = link_to 'Destroy', newspaper.model, data: { confirm: 'Are you sure?' }, method: :delete if newspaper.destroy?
 
-- if @policy.new?
-= link_to 'New Newspaper', new_newspaper_path
+br
+
+- if @newspapers.new?
+  = link_to 'New Newspaper', new_newspaper_path

@@ -10,17 +10,66 @@ p
   = @newspaper.display_name
 p
   strong Publisher:&nbsp
-  = link_to @newspaper.publisher&.display_name, publisher_path(@newspaper.publisher) if @newspaper.publisher
+  = link_to_if @newspaper.publisher.show?, @newspaper.publisher.label, @newspaper.publisher.model if @newspaper.publisher?
 
-- if @policy.edit?
-=> link_to 'Edit', edit_newspaper_path(@newspaper)
-'|
+- if @newspaper.edit?
+  => link_to 'Edit', edit_newspaper_path(@newspaper.model)
+  '|
+- if @newspaper.destroy?
+  =<> link_to 'Delete', @newspaper.model, data: { confirm: 'Are you sure?' }, method: :delete
+  '|
 =< link_to 'Back', newspapers_path
 
-- unless @newspaper.listings.empty?
+- if @newspaper.listings.index?
   hr
   h2 Listings
   ul
-    - @newspaper.listings.each do |listing|
-      li
-        = link_to listing.title, listing_path(listing)
+    - if @newspaper.listings?
+      - @newspaper.listings.each do |listing|
+        li
+          = link_to_if listing.show?, listing.label, newspaper_listing_path(@newspaper.model, listing.model)
+    - else
+      li No Listings
+  = link_to 'Manage listings', newspaper_listing_path(@newspaper.model)
+
+- if @newspaper.groups.index?
+  hr
+  h2 Groups
+  ul
+    - if @newspaper.groups?
+      - @newspaper.groups.each do |group|
+        li
+          = link_to_if group.show?, group.label, group.model
+    - else
+      li No Groups
+  = link_to 'Mange groups', newspaper_groups_path(@newspaper.model)
+
+- if @newspaper.users.index?
+  hr
+  h2 Users
+  table
+    thead
+      tr
+        th User
+        th Email
+        th Administrator
+    tbody
+    - if @newspaper.users?
+      - @newspaper.users.each do |user|
+        tr
+          td = link_to_if user.show?, user.label, user.model
+          td = user.email
+          - if user.privilege?
+            td Yes
+            td = link_to 'Revoke', revoke_newspaper_user_privilege_path(@newspaper.model, user.model, user.privilege.model.id), method: :delete if user.privilege.revoke?
+          - else
+            td No
+            td = link_to 'Permit', permit_newspaper_user_privilege_path(@newspaper.model, user.model, user.privilege.model.id), method: :patch if user.privilege.permit?
+    - else
+      tr
+        td
+        td No Users
+        td
+  - if @publisher.present? && (@newspaper.users.add? || @newspaper.users.remove?)
+    = link_to 'Manage users', publisher_newspaper_users_path(@publisher.model, @newspaper.model)
+

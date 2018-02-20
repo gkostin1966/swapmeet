@@ -1,0 +1,21 @@
+h1 Publisher users
+
+p#notice = notice
+
+table
+  thead
+    tr
+      th Name
+      th Email
+      th Member
+  tbody
+    - @users.each do |user|
+      tr
+        td = link_to_if user.show?, user.label, user.model
+        td = user.email
+        - if user.user?
+          td Yes
+          td = link_to 'Remove', remove_publisher_user_path(@publisher.model, user.model), method: :delete if user.remove?
+        - else
+          td No
+          td = link_to 'Add', add_publisher_user_path(@publisher.model, user.model), method: :patch if user.add?
