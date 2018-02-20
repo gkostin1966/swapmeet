@@ -1,0 +1,9 @@
+# Everything here is loaded with Ettin as Swapmeet.config in application.rb.
+#
+# All of the available settings are mentioned here with default values and
+# may be overridden in config/settings/<environment>.yml. The values are
+# available to initializers.
+
+# Look up any presenters that have been reloaded by Rails?
+# This is helpful in development mode and generally unnecessary in production.
+cache_presenters: false

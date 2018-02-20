@@ -1,0 +1,4 @@
+# Settings appropriate for running Swapmeet in production
+
+# Make sure that any reloaded presenters are looked up on each request.
+cache_presenters: true

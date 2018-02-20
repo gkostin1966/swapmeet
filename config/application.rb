@@ -19,6 +19,15 @@ require "sprockets/railtie"
 Bundler.require(*Rails.groups)
 
 module Swapmeet
+  class << self
+    def config
+      @config ||= Ettin.for(Ettin.settings_files('config', Rails.env))
+    end
+  end
+
+  # Eagerly load settings files.
+  self.config
+
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.1
@@ -32,8 +41,5 @@ module Swapmeet
 
     # Add presenters to autoload paths
     config.autoload_paths += %W[#{config.root}/app/presenters]
-
-    # Add editors to autoload paths
-    config.autoload_paths += %W[#{config.root}/app/editors]
   end
 end
