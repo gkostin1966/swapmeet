@@ -2,7 +2,8 @@
 
 FactoryBot.define do
   factory :category do
-    title "A Category"
-    body  "This is an example category"
+    name "category"
+    display_name "Category"
+    title "Title"
   end
 end

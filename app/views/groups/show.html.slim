@@ -1,0 +1,57 @@
+h1 Group
+
+p#notice = notice
+
+p
+  strong Name:&nbsp
+  = @group.name
+p
+  strong Display name:&nbsp
+  = @group.display_name
+p
+  strong Parent:&nbsp
+  = link_to_if @group.parent.show?, @group.parent.label, @group.parent.model if @group.parent?
+
+- if @group.edit?
+  => link_to 'Edit', edit_group_path(@group.model)
+  '|
+- if @group.destroy?
+  =<> link_to 'Delete', @group.model, data: { confirm: 'Are you sure?' }, method: :delete
+  '|
+=< link_to 'Back', groups_path
+
+- if @group.children.index?
+  hr
+  h2 Children
+  ul
+    - if @group.children?
+      - @group.children.each do |child|
+        li
+          = link_to_if child.show?, child.label, child.model
+    - else
+      li No Children
+  = link_to 'Manage Children', group_groups_path(@group.model)
+
+- if @group.users.index?
+  hr
+  h2 Users
+  ul
+    - if @group.users?
+      - @group.users.each do |user|
+        li
+          = link_to_if user.show?, user.label, user.model
+    - else
+      li No Users
+  = link_to 'Manage Users', group_users_path(@group.model)
+
+- if @group.publishers.index?
+  hr
+  h2 Publishers
+  ul
+    - if @group.publishers?
+      - @group.publishers.each do |publisher|
+        li
+          => link_to_if publisher.show?, publisher.label, publisher.model
+    - else
+      li No Publishers
+  = link_to 'Manage Publishers', group_publishers_path(@group.model)

@@ -12,6 +12,5 @@ AllCops:
     - 'bin/**/*'
     - 'vendor/**/*'
 
-
 Style/StringLiterals:
   Enabled: false

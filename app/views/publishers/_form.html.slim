@@ -1,0 +1,18 @@
+= form_for @publisher.model do |f|
+  - if @publisher.errors.any?
+    #error_explanation
+      h2 = "#{pluralize(@publisher.errors.count, "error")} prohibited this publisher from being saved:"
+      ul
+        - @publisher.errors.full_messages.each do |message|
+          li = message
+
+  .field
+    = f.label :name
+    = f.text_field :name
+  .field
+    = f.label :display_name
+    = f.text_field :display_name
+  .field
+    = f.label :domain_id
+    = f.select :domain_id, @publisher.domains, prompt: "Select a Domain"
+  .actions = f.submit

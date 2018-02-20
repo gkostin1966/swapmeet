@@ -1,0 +1,33 @@
+h1 Listing groups
+
+- if @groups.empty?
+  h2 No Groups
+- else
+  table
+    thead
+      tr
+        th Group
+        th Parent
+        th Member
+        th
+        th
+        th
+    tbody
+      - @groups.each do |group|
+        tr
+          td = link_to_if group.show?, group.label, group.model
+          td = link_to_if group.parent.show?, group.parent.label, group.parent.model if group.parent?
+          - if group.user?
+            td Yes
+            td = link_to 'Leave', leave_group_user_path(group.model, current_user), method: :delete if group.leave?
+          - else
+            td No
+            td = link_to 'Join', join_group_user_path(group.model, current_user), method: :patch if group.join?
+          td = link_to 'Show', group.model if group.show?
+          td = link_to 'Edit', edit_group_path(group.model) if group.edit?
+          td = link_to 'Destroy', group.model, data: { confirm: 'Are you sure?' }, method: :delete if group.destroy?
+
+br
+
+- if @groups.new?
+  = link_to 'New Group', new_group_path

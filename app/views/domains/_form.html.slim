@@ -1,0 +1,18 @@
+= form_for @domain.model do |f|
+  - if @domain.errors.any?
+    #error_explanation
+      h2 = "#{pluralize(@domain.errors.count, "error")} prohibited this domain from being saved:"
+      ul
+        - @domain.errors.full_messages.each do |message|
+          li = message
+
+  .field
+    = f.label :name
+    = f.text_field :name
+  .field
+    = f.label :display_name
+    = f.text_field :display_name
+  .field
+    = f.label :parent
+    = f.select :parent_id, @domain.domains, prompt: "Select a Parent"
+  .actions = f.submit

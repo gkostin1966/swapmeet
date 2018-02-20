@@ -3,11 +3,9 @@
   <head>
     <title>Swapmeet</title>
     <%= csrf_meta_tags %>
-
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
-
   <body>
     <div id="header">
       Hello, <%= current_user.display_name %>!
@@ -24,10 +22,22 @@
     <div id="footer">
       <hr>
       <span><%= link_to 'Home', root_path %></span>
-      <% if logged_in? %>
-        <span> | </span>
-        <span><%= link_to 'Indices', indexes_path %></span>
-      <% end %>
+      <span> | </span>
+      <span><%= link_to 'Categories', categories_path %></span>
+      <span> | </span>
+      <span><%= link_to 'Domains', domains_path %></span>
+      <span> | </span>
+      <span><%= link_to 'Gatekeepers', gatekeepers_path %></span>
+      <span> | </span>
+      <span><%= link_to 'Groups', groups_path %></span>
+      <span> | </span>
+      <span><%= link_to 'Listings', listings_path %></span>
+      <span> | </span>
+      <span><%= link_to 'Newspapers', newspapers_path %></span>
+      <span> | </span>
+      <span><%= link_to 'Publishers', publishers_path %></span>
+      <span> | </span>
+      <span><%= link_to 'Users', users_path %></span>
     </div>
   </body>
 </html>

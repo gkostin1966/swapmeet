@@ -1,25 +1,44 @@
 # frozen_string_literal: true
 
-class ListingPresenter < ResourcePresenter
-  delegate [:edit?, :destroy?] => :policy
+class ListingPresenter < ApplicationPresenter
+  attr_reader :categories, :newspapers
 
-  def link_or_title
-    if policy.show?
-      view.link_to title, listing
-    else
-      title
-    end
+  delegate :title, :body, to: :model
+
+  def label
+    return model.title if model.title.present?
+    'LISTING'
   end
 
-  def show_link
-    view.link_to 'Show', listing if policy.show?
+  def category?
+    model.category.present?
+  end
+
+  def category
+    CategoryPresenter.new(user, CategoriesPolicy.new([policy.subject_agent, ObjectPolicyAgent.new(:Category, model.category)]), model.category)
+  end
+
+  def categories
+    @categories ||= Category.all.map { |category| [category.display_name, category.id] }
+  end
+
+  def newspaper?
+    model.newspaper.present?
+  end
+
+  def newspaper
+    NewspaperPresenter.new(user, NewspapersPolicy.new([policy.subject_agent, ObjectPolicyAgent.new(:Newspaper, model.newspaper)]), model.newspaper)
+  end
+
+  def newspapers
+    @newspapers ||= Newspaper.all.map { |newspaper| [newspaper.display_name, newspaper.id] }
+  end
+
+  def owner?
+    model.owner.present?
   end
 
   def owner
-    present(listing.owner)
+    UserPresenter.new(user, UsersPolicy.new([policy.subject_agent, ObjectPolicyAgent.new(:User, model.owner)]), model.owner)
   end
-
-  private
-
-    alias_method :listing, :resource
 end
