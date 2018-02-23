@@ -28,9 +28,11 @@ require 'rspec/rails'
 # If you are not using ActiveRecord, you can remove this line.
 ActiveRecord::Migration.maintain_test_schema!
 
+require_relative 'support/authorization_helper'
 require_relative 'support/controllers_helper'
 
 RSpec.configure do |config|
+  config.include AuthorizationHelper, type: :authorization
   config.include ControllersHelper, type: :controller
   config.include ControllersHelper, type: :view
 
