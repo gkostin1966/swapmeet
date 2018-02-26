@@ -39,6 +39,9 @@ module Swapmeet
     # Don't generate system test files.
     config.generators.system_tests = nil
 
+    # Add authorization to autoload paths
+    config.autoload_paths += %W[#{config.root}/app/authorization]
+
     # Add presenters to autoload paths
     config.autoload_paths += %W[#{config.root}/app/presenters]
   end
